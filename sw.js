@@ -17,6 +17,8 @@ const SHELL = [
   "js/widgets/_kit.js",
   "js/widgets/comb-choose.js",
   "js/widgets/comb-pascal.js",
+  "js/widgets/comb-subsets.js",
+  "js/widgets/comb-split.js",
   "js/views.js",
   "js/app.js"
 ];
