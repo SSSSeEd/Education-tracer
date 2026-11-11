@@ -7,7 +7,7 @@ SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支�
 - 構成・スキーマ・デザインの正本は、Vault の `Knowledge\security-tracer-manual\`(README と 01〜06。届くときだけ読む)と、security-tracer リポジトリ。ここでは差分だけ書く。
 
 ## 運用の事実
-- リポジトリ: https://github.com/SSSSeEd/Education-tracer (`main` はまだ無い。作業ブランチ **`claude/project-thread-jlp8zi`** に積んでいる。PR は未作成)
+- リポジトリ: https://github.com/SSSSeEd/Education-tracer (`main` はまだ無い。作業ブランチは **`claude/project-thread-jlp8zi`**(第3回まで)。第4回は **`claude/project-thread-m6kozb`** に積んだ(jlp8zi の続き)。次の担当はこの最新ブランチから続け、Pages の公開ブランチ設定は SeEd に確認する。PR は未作成)
 - 公開: GitHub Pages「Deploy from a branch」= 上のブランチ / `(root)`。**push するたびに1〜2分で反映**。URL は `https://sssseed.github.io/Education-tracer/`(SeEd が設定済み・表示確認済み)。マージは区切りのときだけで足りる(SeEd は毎回のマージを面倒に感じる)。PR を出すときは、指示文の帰属ブロックと assignee/reviewer の手順に従う。
 - 資料の置き場所(SeEd が置く): `C:\Users\eyedr\Documents\Vault\Knowledge\education-tracer-materials\<科目名>\`(Vault が接続されているとき)。今回の情報数学は添付で受け取った。
 - 検証: `node tools/check.js`(OK になること)と `node tools/test.js`(19件)。UI は `python3 -m http.server 8765` と Playwright で、幅390pxのライト/ダーク両方、全ルートで「コンソールエラーなし・横はみ出しなし」を確認してから push。
@@ -30,7 +30,7 @@ SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支�
 5. 返信は短く。確認は最小限。タブ名は「ラボ」。
 
 ## 未完了(次にやること)
-- 第3・4回は完了(上記)。第4回・第5回は、第3回の型(身近な場面 → {prop}枠 → ラボ → 練習問題 → まとめ)に合わせる。第4回の最初のレッスンは、第3回 im-ex-grid の最短経路を「R と D の並べ替え」で数え直す形でつなぐ(lattice ラボの路線と、重複順列の anagram ラボを並べると分かりやすい)。
+- 第3・4回は完了(上記)。第5回は、第3回の型(身近な場面 → {prop}枠 → ラボ → 練習問題 → まとめ)に合わせる。第4回の最初のレッスンは、第3回 im-ex-grid の最短経路を「R と D の並べ替え」で数え直す形でつなぐ(lattice ラボの路線と、重複順列の anagram ラボを並べると分かりやすい)。
 - **第5回**(解答版): 重複順列・順序分割のまとめ、₃H₅=21、x+y+z=4 の解15、問1〜7(a+b+c+d=8→165、≤8→495、正整数→36、下限つき→78、階段15段→987(フィボナッチ)、2段3段→12、1・2・3段→274)。ラボ案: 階段(フィボナッチとパスカルの斜め和)。
 - 残り2科目の資料が届いたら、同じ型で追加(新しい `ST.LAB_GROUPS`、コース、色 `--cN` をライト/ダークの3か所)。
 - 「練習問題」を、各回のまとめクイズ(`ST.QUIZ`)にも足す。クイズ画面の自動問題(用語の説明→名前)は、数学では不自然なので、必要なら直す。
