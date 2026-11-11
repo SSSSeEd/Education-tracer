@@ -21,6 +21,13 @@ const SHELL = [
   "js/widgets/comb-subsets.js",
   "js/widgets/comb-split.js",
   "js/widgets/comb-vander.js",
+  "js/widgets/_comb.js",
+  "js/widgets/comb-committee.js",
+  "js/widgets/comb-atleast.js",
+  "js/widgets/comb-points.js",
+  "js/widgets/comb-polygon.js",
+  "js/widgets/comb-rects.js",
+  "js/widgets/comb-lattice.js",
   "js/views.js",
   "js/app.js"
 ];
