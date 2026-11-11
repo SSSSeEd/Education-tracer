@@ -15,6 +15,7 @@ const SHELL = [
   "js/data/courses.js",
   "js/data/quiz.js",
   "js/widgets/_kit.js",
+  "js/widgets/comb-choose.js",
   "js/widgets/comb-pascal.js",
   "js/views.js",
   "js/app.js"

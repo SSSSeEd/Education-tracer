@@ -113,6 +113,7 @@
     const c = ST.COURSE[l.course], prev = c.lessons[l.idx - 1], next = c.lessons[l.idx + 1] || (ST.COURSES[ST.COURSES.indexOf(c) + 1] || {}).lessons?.[0];
     const block = b => b.p ? `<p>${md(b.p)}</p>` : b.h ? `<h2>${esc(b.h)}</h2>` : b.list ? `<ul>${b.list.map(x => `<li>${md(x)}</li>`).join("")}</ul>`
       : b.w ? `<div data-widget="${b.w}" data-opts='${esc(JSON.stringify(b.o || {}))}'></div>` : b.callout ? `<div class="callout ${b.kind || "info"}">${md(b.callout)}</div>`
+      : b.ex ? `<div class="card ex" data-ex="${esc(JSON.stringify({ a: b.ex.a, term: b.ex.term, exp: b.ex.exp }))}"><div class="eyebrow">練習問題</div><p class="q-text">${md(b.ex.q)}</p><div class="q-opts">${ST.shuffle(b.ex.a.map((_, i) => i)).map(i => `<button type="button" data-xi="${i}">${esc(b.ex.a[i])}</button>`).join("")}</div><div data-xexp></div></div>`
       : b.key ? `<div class="keypoints"><div class="eyebrow">このレッスンのポイント</div><ul>${b.key.map(x => `<li>${md(x)}</li>`).join("")}</ul></div>` : "";
     // Group consecutive prose blocks into reading columns; widgets span the full width.
     let html = "", buf = "";
@@ -132,6 +133,20 @@
       <div class="lesson-nav">${prev ? `<a class="btn" href="#l-${prev.id}">‹ ${esc(prev.title)}</a>` : "<span></span>"}<button class="btn primary" type="button" data-done${locked ? " hidden" : ""}>${ST.P.lessons[l.id] ? "完了済み ✓" : "このレッスンを完了"}</button>${next ? `<a class="btn" href="#l-${next.id}">${esc(next.title)} ›</a>` : ""}</div>
     </article>`;
     v.querySelector("[data-done]").onclick = () => { ST.markLesson(l.id); next ? (location.hash = "l-" + next.id) : (location.hash = "course-" + c.id); };
+  });
+
+  /* Inline practice question inside a lesson: a[0] is the correct answer. Records the result like the quiz does. */
+  document.addEventListener("click", e => {
+    const btn = e.target.closest && e.target.closest("[data-xi]");
+    if (!btn) return;
+    const box = btn.closest("[data-ex]"); if (!box || box.dataset.done) return;
+    box.dataset.done = "1";
+    const d = JSON.parse(box.dataset.ex), i = +btn.dataset.xi, ok = i === 0;
+    ST.$$("[data-xi]", box).forEach(b => { const k = +b.dataset.xi; if (k === 0) b.classList.add("right"); else if (k === i) b.classList.add("wrong"); b.disabled = true; });
+    box.querySelector("[data-xexp]").innerHTML = `<div style="margin-top:10px;font-size:14px"><span class="chip ${ok ? "ok" : "attack"}">${ok ? "正解" : "不正解"}</span> 正解は「${esc(d.a[0])}」<p style="margin:8px 0 0">${md(d.exp)}</p></div>`;
+    ST.P.quiz.answered++; if (ok) ST.P.quiz.correct++;
+    if (d.term) { const st = ST.termStat(d.term); ok ? st.c = (st.c || 0) + 1 : st.w = (st.w || 0) + 1; ST.P.terms[d.term] = st; }
+    ST.touchStreak(); ST.save();
   });
 
   /* ---------- Skill tree: tiers by depth (longest requires chain from an entry lesson) ---------- */

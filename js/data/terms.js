@@ -19,6 +19,12 @@ ST.TERMS = [
   how:"n 行目には C(n,0), C(n,1), …, C(n,n) が並ぶ。5行目は 1 5 10 10 5 1。",
   risk:"行を数えるとき、一番上を0行目とする点に注意。",
   defense:["一番上を0行目と数える","左上と右上の和で次の行を作る"],
+  src:["im1"]},
+ {id:"binomial-theorem", name:"二項定理", en:"Binomial theorem", cat:"組合せ論", lab:"pascal",
+  summary:"(a+b)ⁿ を展開したときの係数が、二項係数 C(n,r) になるという定理。",
+  how:"(a+b)ⁿ = Σ C(n,r) aⁿ⁻ʳ bʳ（r = 0〜n）。(a+b) を n 個かけたうち r 個から b を選ぶと aⁿ⁻ʳ bʳ ができる。(a+b)³ の係数は 1, 3, 3, 1。",
+  risk:"指数が a では n−r、b では r になる点を取り違えやすい。",
+  defense:["小さい n（3 や 5）で展開して係数を確かめる","係数はパスカルの三角形の n 行目と一致する"],
   src:["im1"]}
 ];
 ST.TERM = Object.fromEntries(ST.TERMS.map(t => [t.id, t]));
