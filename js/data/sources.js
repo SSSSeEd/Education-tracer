@@ -13,5 +13,6 @@ ST.SRC = {
   am5: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"複素関数の図示・連続性", url:"https://www.umezakinaoya.com/notes/complex-continuity/", checked:"2026-11-11"},
   am6: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"微分係数と一次近似", url:"https://www.umezakinaoya.com/notes/derivative-and-approximation/", checked:"2026-11-11"},
   am7: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"正則関数の定義", url:"https://www.umezakinaoya.com/notes/holomorphic-definition/", checked:"2026-11-11"},
-  am8: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"コーシー・リーマンの方程式", url:"https://www.umezakinaoya.com/notes/cauchy-riemann/", checked:"2026-11-11"}
+  am8: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"コーシー・リーマンの方程式", url:"https://www.umezakinaoya.com/notes/cauchy-riemann/", checked:"2026-11-11"},
+  im5: {org:"情報数学 授業資料", label:"後期 情報数学 第5回(重複組合せの演習・階段のぼり・フィボナッチ数)", url:"https://github.com/SSSSeEd/education-tracer", checked:"2026-11-11"}
 };
