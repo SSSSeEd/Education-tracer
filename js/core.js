@@ -26,6 +26,11 @@ window.ST = window.ST || {};
       return `<a href="#term-${id}">${label || (t ? ST.esc(t.name) : id)}</a>`;
     });
 
+  /* "What is this?" box shown before a property or a lab: tag, name, formula, what it says, what it counts. */
+  ST.propHtml = p => `<div class="prop-box"><div class="prop-h"><span class="chip">${ST.esc(p.tag || "性質")}</span><b>${ST.esc(p.name)}</b></div>
+    <div class="prop-f" role="math">${ST.esc(p.formula)}</div>
+    <dl>${p.says ? `<dt>表していること</dt><dd>${ST.md(p.says)}</dd>` : ""}${p.meaning ? `<dt>意味(何を数えている?)</dt><dd>${ST.md(p.meaning)}</dd>` : ""}</dl></div>`;
+
   /* ---------- Sources ---------- */
   ST.srcList = keys => `<ul class="sources">${keys.filter(k => ST.SRC[k]).map(k => { const s = ST.SRC[k]; return `<li><span class="org">${ST.esc(s.org)}</span><a href="${ST.esc(s.url)}" target="_blank" rel="noopener">${ST.esc(s.label)}</a></li>`; }).join("")}</ul>`;
 
@@ -130,6 +135,8 @@ window.ST = window.ST || {};
     if (!def) { host.innerHTML = `<p class="empty">ウィジェット「${ST.esc(name)}」は準備中です。</p>`; return; }
     host.innerHTML = `<div class="bench"><div class="bench-h"><span class="led"></span><span class="eyebrow">${ST.esc((opts && opts.title) || def.title)}</span>${def.motion ? `<button type="button" class="chip" data-motion title="パケットの動きの速さを切り替える">${ST.MOTION_LABEL[ST.motion]}</button>` : ""}${def.group ? `<a class="chip" href="#lab-${name}" title="単独で開く">LAB</a>` : ""}</div><div class="bench-b"></div></div>`;
     const body = host.querySelector(".bench-b");
+    /* A lab can state what it shows before the interactive part: def.formula / def.says / def.meaning. */
+    if (def.formula && !(opts && opts.hideProp)) body.parentNode.insertBefore(Object.assign(document.createElement("div"), { innerHTML: ST.propHtml({ tag: def.tag || "この図が表すこと", name: def.name || def.title, formula: def.formula, says: def.says, meaning: def.meaning }) }).firstChild, body);
     const mb = host.querySelector("[data-motion]");
     if (mb) mb.onclick = () => { ST.motion = ST.motion === "normal" ? "slow" : ST.motion === "slow" ? "off" : "normal"; try { localStorage.setItem("edu.motion", ST.motion); } catch (e) {} ST.$$("[data-motion]").forEach(b => b.textContent = ST.MOTION_LABEL[ST.motion]); };
     try {

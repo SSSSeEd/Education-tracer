@@ -8,6 +8,10 @@
   ST.widget("vander", {
     title: "ヴァンデルモンドの畳み込み:全体の箱 ＝ Σ(赤の箱 × 青の箱)",
     group: "comb", name: "ヴァンデルモンドの箱の図", desc: "赤 l 個・青 m 個から n 個選ぶ数を、赤から r 個選ぶ場合で足し上げる", order: 6,
+    tag: "性質④",
+    formula: "C(l+m,n) ＝ Σ C(l,r) × C(m,n−r)　(r＝0〜n)",
+    says: "ヴァンデルモンドの畳み込み。全体の箱の数は、(赤の箱)×(青の箱)を r で足したものに等しい。",
+    meaning: "l+m 個から n 個選ぶ全部の組を、「赤から r 個、青から n−r 個」で分けて数えています。赤と青は独立に選べるので、場合ごとに掛け算になります。",
     mount(el) {
       let l = 2, m = 5, n = 4, r = 0, upto = -1, alive = true, busy = false;
       const draw = () => {

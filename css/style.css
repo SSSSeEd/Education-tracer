@@ -486,3 +486,10 @@ table.tbl td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;whi
 nav.tabs a[aria-current="page"]{font-weight:700;color:var(--packet);box-shadow:inset 0 3px 0 var(--packet)}
 nav.tabs a[aria-current="page"] svg{stroke-width:2.2}
 @media (min-width:960px){nav.tabs a[aria-current="page"]{box-shadow:inset 3px 0 0 var(--packet)}}
+
+/* ---- "What is this?" box (property / lab header) ---- */
+.prop-box{border:1.5px solid var(--line);border-left:5px solid var(--cc,var(--packet));border-radius:var(--r);background:var(--surface);padding:12px 14px;margin:12px 0;display:grid;gap:8px}
+.bench .prop-box{margin:0;border-radius:0;border-width:0 0 1px 0;border-left:5px solid var(--packet);background:var(--packet-soft)}
+.prop-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.prop-h b{font-size:17px}
+.prop-f{font:600 18px/1.6 var(--f-mono);background:var(--sunken);border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
+.prop-box dl{margin:0;display:grid;gap:2px}.prop-box dt{font-size:13px;font-weight:700;color:var(--muted);margin-top:6px}.prop-box dd{margin:0;font-size:15.5px;line-height:1.7}

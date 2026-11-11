@@ -8,6 +8,9 @@
   ST.widget("pascal", {
     title: "パスカルの三角形：数をタップして、左上と右上の和を確かめる",
     group: "comb", name: "パスカルの三角形", desc: "各数は左上と右上の和。二項係数として読む", order: 1,
+    formula: "n行目 r番目 ＝ C(n,r) ＝ 左上 ＋ 右上",
+    says: "パスカルの三角形の数は、すべて二項係数 C(n,r)(n 個から r 個を選ぶ数)で、端以外の数は左上と右上の数の和になっています。",
+    meaning: "数をタップすると、その数が「n 個から r 個選ぶ組合せの数」であることと、左上・右上の和でできている様子が見えます。各行の合計は 2ⁿ です。",
     mount(el) {
       let sel = { n: 4, r: 2 }, shown = N, alive = true, building = false;
       const draw = (fresh) => {

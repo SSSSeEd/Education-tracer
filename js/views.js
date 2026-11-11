@@ -112,7 +112,8 @@
     const l = ST.LESSON[id]; if (!l) return ST.views.courses(v);
     const c = ST.COURSE[l.course], prev = c.lessons[l.idx - 1], next = c.lessons[l.idx + 1] || (ST.COURSES[ST.COURSES.indexOf(c) + 1] || {}).lessons?.[0];
     const block = b => b.p ? `<p>${md(b.p)}</p>` : b.h ? `<h2>${esc(b.h)}</h2>` : b.list ? `<ul>${b.list.map(x => `<li>${md(x)}</li>`).join("")}</ul>`
-      : b.w ? `<div data-widget="${b.w}" data-opts='${esc(JSON.stringify(b.o || {}))}'></div>` : b.callout ? `<div class="callout ${b.kind || "info"}">${md(b.callout)}</div>`
+      : b.w ? `<div data-widget="${b.w}" data-opts='${esc(JSON.stringify({ hideProp: true, ...(b.o || {}) }))}'></div>` : b.callout ? `<div class="callout ${b.kind || "info"}">${md(b.callout)}</div>`
+      : b.prop ? ST.propHtml(b.prop)
       : b.ex ? `<div class="card ex" data-ex="${esc(JSON.stringify({ a: b.ex.a, term: b.ex.term, exp: b.ex.exp }))}"><div class="eyebrow">練習問題</div><p class="q-text">${md(b.ex.q)}</p><div class="q-opts">${ST.shuffle(b.ex.a.map((_, i) => i)).map(i => `<button type="button" data-xi="${i}">${esc(b.ex.a[i])}</button>`).join("")}</div><div data-xexp></div></div>`
       : b.key ? `<div class="keypoints"><div class="eyebrow">このレッスンのポイント</div><ul>${b.key.map(x => `<li>${md(x)}</li>`).join("")}</ul></div>` : "";
     // Group consecutive prose blocks into reading columns; widgets span the full width.
@@ -185,8 +186,10 @@
   ST.view("labitem", (v, id) => {
     const l = ST.LAB[id]; if (!l) return ST.views.lab(v);
     const ls = lessonsUsing(id), ts = ST.TERMS.filter(t => t.lab === id);
+    const order = ST.LABS.flatMap(g => g.items.map(x => x[0])), pos = order.indexOf(id), pv = order[pos - 1], nx = order[pos + 1];
+    const nav = `<div class="lesson-nav lab-nav">${pv ? `<a class="btn" href="#lab-${pv}">‹ ${esc(ST.LAB[pv].n)}</a>` : "<span></span>"}<span class="cap" style="align-self:center">${pos + 1} / ${order.length}</span>${nx ? `<a class="btn" href="#lab-${nx}">${esc(ST.LAB[nx].n)} ›</a>` : "<span></span>"}</div>`;
     v.innerHTML = `<a href="#lab" style="font-size:14px">‹ 図解ラボ</a><div class="page-h"><div class="eyebrow" style="color:${l.color}">${esc(l.g)}</div><h1>${esc(l.n)}</h1><p class="lead">${esc(l.d)}</p></div>
-      ${!ST.labOpen(id) && ST.gated("lab-" + id) ? gate("lab-" + id, "このラボは、次のレッスンのどれかを読むと開きます。", ls.map(x => x.id)) : `<div data-widget="${id}"></div>`}
+      ${!ST.labOpen(id) && ST.gated("lab-" + id) ? gate("lab-" + id, "このラボは、次のレッスンのどれかを読むと開きます。", ls.map(x => x.id)) : `${nav}<div data-widget="${id}"></div>${nav}`}
       <div class="grid2">${ls.length ? `<div class="card"><div class="eyebrow">このラボを使うレッスン</div><div class="list">${ls.map(x => `<a class="row" href="#l-${x.id}"><div class="body"><div class="t">${esc(x.title)}</div><div class="s">${esc(ST.COURSE[x.course].title)}</div></div></a>`).join("")}</div></div>` : ""}
       ${ts.length ? `<div class="card"><div class="eyebrow">関連する用語</div><div class="list">${ts.map(t => `<a class="row" href="#term-${t.id}"><div class="body"><div class="t">${esc(t.name)}</div><div class="s">${md(t.summary)}</div></div></a>`).join("")}</div></div>` : ""}</div>`;
   });

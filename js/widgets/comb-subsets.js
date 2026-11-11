@@ -8,6 +8,10 @@
   ST.widget("subsets", {
     title: "部分集合:大きさ別に数えると 2ⁿ、偶数個と奇数個を比べると同数",
     group: "comb", name: "部分集合の数え上げ", desc: "C(n,r) の合計が 2ⁿ、交代和が 0 になる理由", order: 3,
+    tag: "性質②・⑤",
+    formula: "②  C(n,0)＋C(n,1)＋…＋C(n,n) ＝ 2ⁿ　⑤  C(n,0)−C(n,1)＋C(n,2)−… ＝ 0 (n≧1)",
+    says: "②二項係数を全部足すと 2ⁿ。⑤符号を交互にして足すと 0。",
+    meaning: "n 個の集合の部分集合を数えています。各要素を「入れる/入れない」で決めるので全部で 2ⁿ 個(大きさ r のものが C(n,r) 個)。偶数個の部分集合と奇数個の部分集合は同じ数なので、交代和は 0 です。",
     mount(el) {
       let n = 4, view = "size", mine = new Set();
       const subsets = items => items.reduce((acc, x) => acc.concat(acc.map(s => [...s, x])), [[]]);
