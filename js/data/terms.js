@@ -55,6 +55,25 @@ ST.TERMS = [
   how:"6人から1人以上を選ぶ方法は、全部の選び方 2⁶ = 64 から「誰も選ばない」1通りを引いて 63 通り。",
   risk:"全体の数や、引く場合の範囲(0人だけか、2人以下までか)を取り違えやすい。",
   defense:["「少なくとも k 人」の反対は「k−1 人以下」と書き出す","小さい n で全部書き出して確かめる"],
-  src:["im3"]}
+  src:["im3"]},
+ {id:"permutation-repetition", name:"重複順列", en:"Permutation with repetition", cat:"組合せ論", lab:"anagram",
+  summary:"同じものを含む n 個を並べる数。r 種類がそれぞれ n₁, …, nᵣ 個あるとき P(n: n₁,…,nᵣ)。",
+  how:"n! ÷ (n₁! n₂! … nᵣ!)。BENZENE は 7! ÷ (3! 2!) = 420 通り。",
+  risk:"全部ちがうものとして n! で数えてしまい、同じものの入れ替えを割り忘れやすい。",
+  defense:["同じ文字の個数を先に数え上げる","小さい例(BABBY など)で書き出して確かめる"],
+  src:["im4"]},
+ {id:"ordered-partition", name:"順序分割", en:"Ordered partition", cat:"組合せ論", lab:"partition",
+  summary:"集合を、大きさの決まったグループに、順序をつけて(区別して)分けること。",
+  how:"7人を 3・2・2 に分ける数は 7! ÷ (3! 2! 2!) = 210。グループに区別がなければ、同じ大きさのグループの入れ替え 2! で割って 105。",
+  risk:"グループに名前があるかないかで、答えが入れ替え分だけ変わる。",
+  defense:["「班に名前や役割があるか」を問題文で確かめる","同じ大きさのグループがあるときだけ割る"],
+  src:["im4"]},
+ {id:"combination-repetition", name:"重複組合せ", en:"Combination with repetition", cat:"組合せ論", lab:"bars",
+  summary:"n 種類のものから重複を許して r 個選ぶ組合せ。記号は ₙHᵣ。",
+  how:"ₙHᵣ = C(n+r−1, r)。3種類のお菓子から5個選ぶなら ₃H₅ = C(7,5) = 21。○と仕切り棒の並べ替えで考える。",
+  risk:"通常の組合せ C(n,r) と混ぜやすい。重複を許すときは棒を足して数える。",
+  defense:["○ が r 個、棒が n−1 本の並びで書き直す","小さい例で全部書き出す"],
+  src:["im4"]}
+
 ];
 ST.TERM = Object.fromEntries(ST.TERMS.map(t => [t.id, t]));

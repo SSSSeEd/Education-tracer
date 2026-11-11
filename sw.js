@@ -28,6 +28,10 @@ const SHELL = [
   "js/widgets/comb-polygon.js",
   "js/widgets/comb-rects.js",
   "js/widgets/comb-lattice.js",
+  "js/widgets/comb-anagram.js",
+  "js/widgets/comb-gifts.js",
+  "js/widgets/comb-bars.js",
+  "js/widgets/comb-partition.js",
   "js/views.js",
   "js/app.js"
 ];
