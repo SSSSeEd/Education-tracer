@@ -32,6 +32,14 @@ const SHELL = [
   "js/widgets/comb-gifts.js",
   "js/widgets/comb-bars.js",
   "js/widgets/comb-partition.js",
+  "js/widgets/_cx.js",
+  "js/widgets/cx-plane.js",
+  "js/widgets/cx-mul.js",
+  "js/widgets/cx-roots.js",
+  "js/widgets/cx-domain.js",
+  "js/widgets/cx-map.js",
+  "js/widgets/cx-dir.js",
+  "js/widgets/cx-cr.js",
   "js/views.js",
   "js/app.js"
 ];
