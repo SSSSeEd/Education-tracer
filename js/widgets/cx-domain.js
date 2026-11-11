@@ -18,7 +18,7 @@
     title: "円・開円板・領域:「開いている」「ひとつながり」を点で確かめる",
     group: "cx", name: "円と領域", desc: "|z−α|＝r、開集合、連結、領域をテスト点で確かめる", order: 4,
     tag: "領域",
-    formula: "円 |z − α| ＝ r　開円板 |z − α| < r　領域 ＝ 開集合 かつ 連結",
+    formula: "|z − α| ＝ r　領域 ＝ 開 かつ 連結",
     says: "|z − α| は z と α の距離なので、|z − α| ＝ r は α を中心とする半径 r の円です。「開集合」「連結」をあわせた集合を領域と呼びます。",
     meaning: "開集合は「どの点でも、まわりを少し丸く囲んでも全部集合の中に入る」集合(境界を含まない)。連結は「2つに切り離せない」こと。微分を考える正則関数は、領域の上で扱います。",
     mount(el) {
@@ -43,7 +43,7 @@
         svg.innerHTML = s;
         big.innerHTML = `<b>${onB ? "境界の上" : inside ? "中" : "外"}</b><span>p ＝ ${cx.fmt(p)}　${sh.eq}${inside || onB ? "" : "(あてはまらない)"}</span>`;
         chips.innerHTML = `<div style="margin:6px 0">${yn(sh.open, "開集合", "開集合ではない")} ${yn(sh.conn, "連結", "連結ではない")} ${yn(sh.open && sh.conn, "領域", "領域ではない")}</div>`;
-        cap.innerHTML = `${sh.note}<br>${inside && !onB && sh.open ? `点 p のまわりに、半径 ${cx.num(Math.min(free, 99))} までの円板(緑)なら全部この集合に入ります。` : onB ? (sh.closed ? "p は円周の上です。どんなに小さな円板で囲んでも、外にはみ出してしまいます(これが「開集合でない」理由)。" : "p は境界の上で、この集合には含まれません。") : "p は集合の外です。点をドラッグして、中・境界・外を確かめてください。"}`;
+        cap.innerHTML = `${sh.note}<br>${inside && !onB && sh.open ? `点 p のまわりに、半径 ${cx.num(Math.min(free, 99))} までの円板(緑)なら全部この集合に入ります。` : onB ? (sh.closed ? "p は円周の上です。どんなに小さな円板で囲んでも、外にはみ出してしまいます(これが「開集合でない」理由)。" : "p は境界の上で、この集合には含まれません。") : (inside ? `p は集合の中です。この集合は開集合ではないので、境界の円周上の点に注意しましょう(点を円周の上へドラッグしてみてください)。` : "p は集合の外です。点をドラッグして、中・境界・外を確かめてください。")}`;
       };
       cx.drag(svg, g, { snap: () => .5, handles: () => [{ id: "p", z: p }], tap: "p", move: (id, q) => { p = q; render(); ST.markLab("cdomain"); } });
       ST.wireSeg(el, "shape", v => { key = v; render(); });

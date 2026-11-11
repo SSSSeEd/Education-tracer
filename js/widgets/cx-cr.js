@@ -19,7 +19,7 @@
     title: "コーシー・リーマンの方程式:4つの偏微分で正則かどうか確かめる",
     group: "cx", name: "CR方程式の確認", desc: "f ＝ u＋iv の偏微分 uₓ, u_y, vₓ, v_y を計算して、CR方程式が成り立つか見る", order: 7,
     tag: "CR方程式",
-    formula: "f ＝ u ＋ iv　uₓ ＝ v_y　かつ　u_y ＝ −vₓ",
+    formula: "uₓ ＝ v_y　u_y ＝ −vₓ",
     says: "実部 u(x,y) と虚部 v(x,y) の偏微分に、uₓ ＝ v_y と u_y ＝ −vₓ の関係があれば、f は複素微分可能(正則)です。逆に、正則なら必ずこの関係が成り立ちます。",
     meaning: "平面の点の動きとして見ると、f は a のまわりで小さな正方形を動かします。CR方程式が成り立つとき、正方形は「回って拡大する」だけ(形は正方形のまま)。成り立たないとき、ゆがんだり裏返ったりします。",
     mount(el) {
@@ -41,9 +41,8 @@
           <span style="color:var(--info)">uₓ ＝ ${n(d.ux)}</span>　<span style="color:var(--info)">v_y ＝ ${n(d.vy)}</span>　${e1 ? "✓ 等しい" : "✗ 違う"}<br>
           <span style="color:var(--packet)">u_y ＝ ${n(d.uy)}</span>　<span style="color:var(--packet)">−vₓ ＝ ${n(-d.vx)}</span>　${e2 ? "✓ 等しい" : "✗ 違う"}`;
         /* Where the two unit steps (right, up) go: the columns of the Jacobian. */
-        const m = Math.max(1.4, Math.hypot(d.ux, d.vx) * 1.3, Math.hypot(d.uy, d.vy) * 1.3, Math.hypot(d.ux + d.uy, d.vx + d.vy) * 1.1), g2 = cx.geom(W, 190, m * W / 190 * .5);
+        const r = [d.ux, d.vx], u = [d.uy, d.vy], c = [r[0] + u[0], r[1] + u[1]], m = 1.2 * Math.max(1.2, ...[r, u, c].flatMap(q => [Math.abs(q[0]), Math.abs(q[1]) * W / 190])), g2 = cx.geom(W, 190, m);
         let s = cx.grid(g2, { ticks: false });
-        const r = [d.ux, d.vx], u = [d.uy, d.vy], c = [r[0] + u[0], r[1] + u[1]];
         s += `<path d="M${g2.P([0, 0])}L${g2.P(r)}L${g2.P(c)}L${g2.P(u)}Z" fill="${ok ? "var(--ok-soft)" : "var(--attack-soft)"}" fill-opacity=".7" stroke="${ok ? "var(--ok)" : "var(--attack)"}" stroke-width="1.6"/>`;
         s += `<path d="M${g2.P([0, 0])}L${g2.P([1, 0])}L${g2.P([1, 1])}L${g2.P([0, 1])}Z" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/>`;
         s += cx.arrow(g2, [0, 0], r, "var(--info)", 2.6) + cx.arrow(g2, [0, 0], u, "var(--packet)", 2.6);

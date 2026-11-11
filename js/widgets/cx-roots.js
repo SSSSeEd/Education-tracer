@@ -8,7 +8,7 @@
     title: "累乗とn乗根:角度が n 倍になる、根は正 n 角形に並ぶ",
     group: "cx", name: "累乗とn乗根", desc: "zⁿ は長さがn乗・角度がn倍。n乗根は円周上に等間隔に並ぶ", order: 3,
     tag: "ド・モアブルの公式",
-    formula: "zⁿ ＝ rⁿ(cos nθ ＋ i sin nθ)　z の n 乗根 ＝ r^(1/n)(cos((θ＋2πk)/n) ＋ i sin((θ＋2πk)/n))",
+    formula: "zⁿ ＝ rⁿ(cos nθ ＋ i sin nθ)",
     says: "z ＝ r(cos θ ＋ i sin θ) のとき、n 乗すると長さは rⁿ、角度は nθ になります。逆に n 乗根は n 個あり、角度が 2π/n ずつずれて並びます。",
     meaning: "掛け算が「回転」なので、n 乗は「n 回回転」です。逆に、角度 θ の点の n 乗根は、θ/n から出発して 360°/n ずつ回した n 個の点で、正 n 角形をつくります。",
     mount(el) {
