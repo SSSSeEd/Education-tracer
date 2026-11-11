@@ -20,6 +20,7 @@ const SHELL = [
   "js/widgets/comb-rule1.js",
   "js/widgets/comb-subsets.js",
   "js/widgets/comb-split.js",
+  "js/widgets/comb-vander.js",
   "js/views.js",
   "js/app.js"
 ];
