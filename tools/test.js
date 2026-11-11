@@ -140,3 +140,32 @@ test("upcomingReviews: days より先のものは含まない", () => {
   assert.deepStrictEqual([...ST.upcomingReviews(0,1)], ["x"]);
 });
 
+
+/* 制御工学ラボの計算(js/widgets/_ctl.js ほか)。部分分数の答えと微分方程式の解が、数値計算と合うことを確かめる。 */
+function loadCtl() {
+  const win = {}, ctx = { window: win, matchMedia: () => ({ matches: false }), localStorage: { getItem: () => null, setItem() {} }, location: { hash: "" }, document: { addEventListener() {}, querySelector: () => null, querySelectorAll: () => [] }, addEventListener() {}, console, performance: { now: () => 0 }, requestAnimationFrame() {}, cancelAnimationFrame() {} };
+  win.addEventListener = ctx.addEventListener; ctx.self = win; vm.createContext(ctx);
+  for (const f of ["js/core.js", "js/widgets/_ctl.js", "js/widgets/ctl-pfd.js", "js/widgets/ctl-ode.js"]) vm.runInContext(fs.readFileSync(path.join(__dirname, "..", f), "utf8"), ctx, { filename: f });
+  return win.ST;
+}
+const CT = loadCtl();
+
+test("部分分数の答え f(t) のラプラス変換が、もとの F(s) と一致する(例1・例2・虚根)", () => {
+  for (const [k, ex] of Object.entries(CT.ctl.pfdEx)) {
+    const f = t => ex.parts.reduce((a, p) => a + p.f(t), 0);
+    for (const s of [2, 3.5]) assert.ok(Math.abs(CT.ctl.laplaceNum(f, s) - ex.Fv(s)) < 2e-3, `${k} s=${s}`);
+  }
+});
+
+test("微分方程式の解(例3・例4)が、RK4 の数値解と一致する", () => {
+  for (const [key, a, b, c] of [["ex3", 2, 6, 1], ["ex3", .5, -3, 2], ["ex3", -1, 2, 1], ["ex4", 0, 0, 0]]) {
+    const B = CT.ctl.odeBuild(key, a, b, c), r = CT.ctl.rk4(B.ode, B.x0, .005, 1200);
+    r.x.forEach((s, i) => assert.ok(Math.abs(s[0] - B.f(i * .005)) < 2e-3 * Math.max(1, Math.abs(B.f(i * .005))), `${key} i=${i}`));
+  }
+});
+
+test("例4: 初期値 y(0)=y′(0)=1 を満たす", () => {
+  const B = CT.ctl.odeBuild("ex4"), h = 1e-6;
+  assert.ok(Math.abs(B.f(0) - 1) < 1e-12);
+  assert.ok(Math.abs((B.f(h) - B.f(0)) / h - 1) < 1e-4);
+});

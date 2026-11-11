@@ -43,6 +43,18 @@ const SHELL = [
   "js/widgets/comb-heq.js",
   "js/widgets/comb-stairs.js",
   "js/widgets/comb-fibpascal.js",
+  "js/widgets/_ctl.js",
+  "js/widgets/ctl-fbk.js",
+  "js/widgets/ctl-msd.js",
+  "js/widgets/ctl-rlc.js",
+  "js/widgets/ctl-motor.js",
+  "js/widgets/ctl-tank.js",
+  "js/widgets/ctl-lin.js",
+  "js/widgets/ctl-pole.js",
+  "js/widgets/ctl-pfd.js",
+  "js/widgets/ctl-ode.js",
+  "js/widgets/ctl-elem.js",
+  "js/widgets/ctl-blk.js",
   "js/views.js",
   "js/app.js"
 ];

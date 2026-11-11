@@ -493,3 +493,7 @@ nav.tabs a[aria-current="page"] svg{stroke-width:2.2}
 .prop-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.prop-h b{font-size:17px}
 .prop-f{font:600 18px/1.6 var(--f-mono);background:var(--sunken);border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
 .prop-box dl{margin:0;display:grid;gap:2px}.prop-box dt{font-size:13px;font-weight:700;color:var(--muted);margin-top:6px}.prop-box dd{margin:0;font-size:15.5px;line-height:1.7}
+
+/* 制御工学ラボ */
+.ctl-sl{display:grid;gap:6px}.ctl-s{display:grid;gap:2px}.ctl-s .lab-label{margin:0}
+.ctl-ply{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ctl-ply .mono{font-family:var(--f-mono);font-size:13px;margin-left:auto}
