@@ -32,6 +32,9 @@ const SHELL = [
   "js/widgets/comb-gifts.js",
   "js/widgets/comb-bars.js",
   "js/widgets/comb-partition.js",
+  "js/widgets/comb-heq.js",
+  "js/widgets/comb-stairs.js",
+  "js/widgets/comb-fibpascal.js",
   "js/views.js",
   "js/app.js"
 ];
