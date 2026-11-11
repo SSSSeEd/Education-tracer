@@ -4,7 +4,8 @@
   const esc = ST.esc, md = ST.md;
 
   ST.LAB_GROUPS = [
-    { id: "comb", g: "組合せ論", color: "var(--c1)" }
+    { id: "comb", g: "組合せ論", color: "var(--c1)" },
+    { id: "cx", g: "複素解析", color: "var(--c2)" }
   ];
   /* Lab catalog is built from widget metadata (group, name, desc, order); widgets without a group are not labs. */
   ST.LABS = ST.LAB_GROUPS.map(g => ({ ...g, items: Object.entries(ST.W).filter(([, w]) => w.group === g.id).sort((a, b) => (a[1].order ?? 99) - (b[1].order ?? 99)).map(([id, w]) => [id, w.name, w.desc]) }));
