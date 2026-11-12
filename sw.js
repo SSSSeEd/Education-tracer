@@ -47,7 +47,6 @@ const SHELL = [
   "js/widgets/cx-csum.js",
   "js/widgets/cx-path.js",
   "js/widgets/cx-polar.js",
-  "js/widgets/cx-arg.js",
   "js/widgets/cx-cauchy.js",
   "js/widgets/comb-heq.js",
   "js/widgets/comb-stairs.js",
