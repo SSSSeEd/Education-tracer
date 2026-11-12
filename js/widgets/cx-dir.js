@@ -16,9 +16,9 @@
     title: "複素微分:どの向きから近づいても、同じ値に集まるか",
     group: "cx", name: "微分は向きによらない", desc: "差分商を h の向きごとに描く。1点に縮めば複素微分可能", order: 6,
     tag: "複素微分",
-    formula: "f′(a) ＝ lim (f(a＋h)−f(a))/h",
+    formula: "$f'(a) = \\lim \\frac{f(a+h)-f(a)}{h}$",
     says: "複素数の h は、平面のあらゆる向きから 0 に近づけます。そのどの向きでも、差分商が同じ値に近づくとき、f は a で複素微分可能です。",
-    meaning: "差分商 Q を h の向き θ(0〜360°)ごとに描くと輪になります。ε(h の長さ)を小さくしたとき、輪が1点に縮めば微分可能、縮まなければ微分できません。実数の微分(右からと左からの2方向)より条件がずっと強い、ということです。",
+    meaning: "差分商 Q を h の向き $\\theta$(0〜360°)ごとに描くと輪になります。$\\varepsilon$(h の長さ)を小さくしたとき、輪が1点に縮めば微分可能、縮まなければ微分できません。実数の微分(右からと左からの2方向)より条件がずっと強い、ということです。",
     mount(el) {
       let key = "sq", ak = "1+i", v = 0, th = 40, alive = true, busy = false;
       el.innerHTML = `<div><p class="lab-label">関数 f(z)</p>${ST.segHtml("fn", Object.entries(FN).map(([k, x]) => [k, x.name]), key)}</div>

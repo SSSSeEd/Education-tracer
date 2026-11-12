@@ -9,9 +9,9 @@
     title: "多価関数:同じ点に戻ってきても、log z の値は戻らない",
     group: "cx", name: "log などの多価性", desc: "z が原点を1周すると、log z は 2πi ずれ、√z は符号が変わる", order: 5.5,
     tag: "多価性",
-    formula: "log z ＝ ln|z| ＋ i(arg z ＋ 2πk)　(k は整数)",
-    says: "偏角は 2π の違いを区別できないので、log z の値は1つに決まらず、2πi ずつずれた無数の値をもちます。√z なら2つ、∛z なら3つです。",
-    meaning: "z が原点のまわりを1周して同じ点に戻ると、続けて追いかけた log z は 2πi だけ上にずれます(値が戻らない)。だから、ふつうは偏角を −π<θ≤π に制限した主値 Log z を使い、負の実軸を切れ目にします。",
+    formula: "$\\log z = \\ln |z| + i(\\arg z + 2\\pi k)$　(k は整数)",
+    says: "偏角は $2\\pi$ の違いを区別できないので、log z の値は1つに決まらず、$2\\pi i$ ずつずれた無数の値をもちます。$\\sqrt{z}$ なら2つ、∛z なら3つです。",
+    meaning: "z が原点のまわりを1周して同じ点に戻ると、続けて追いかけた log z は $2\\pi i$ だけ上にずれます(値が戻らない)。だから、ふつうは偏角を $-\\pi$<$\\theta$≤$\\pi$ に制限した主値 Log z を使い、負の実軸を切れ目にします。",
     mount(el) {
       let key = "log", th = 0, alive = true, busy = false;
       el.innerHTML = `<div><p class="lab-label">関数</p>${ST.segHtml("fn", [["log", "log z"], ["sqrt", "√z"], ["cbrt", "∛z"]], key)}</div>

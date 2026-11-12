@@ -10,9 +10,9 @@
   ST.widget("choose", {
     title: "選ぶ(組合せ)と並べる(順列):全部書き出して数える",
     group: "comb", name: "選ぶ・並べる", desc: "組合せ C(n,r) と順列 P(n,r) を書き出して比べる", order: 2,
-    formula: "P(n,r) ＝ r! × C(n,r)　(C(n,r) ＝ P(n,r) ÷ r!)",
-    says: "選んで並べる数 P(n,r) は、選ぶだけの数 C(n,r) の r! 倍です。",
-    meaning: "C(n,r) は「n 個から r 個を選ぶだけ」の数(順序は区別しない)、P(n,r) は「選んで並べる」数(順序を区別する)。選んだ1組につき並べ方が r! 通りあります。",
+    formula: "$P(n,r) = r! \\times C(n,r) \\quad (C(n,r) = P(n,r) \\div r!)$",
+    says: "選んで並べる数 P(n,r) は、選ぶだけの数 C(n,r) の $r!$ 倍です。",
+    meaning: "C(n,r) は「n 個から r 個を選ぶだけ」の数(順序は区別しない)、P(n,r) は「選んで並べる」数(順序を区別する)。選んだ1組につき並べ方が $r!$ 通りあります。",
     mount(el) {
       let n = 4, r = 2, mode = "c", hotIdx = 0;
       const draw = () => {

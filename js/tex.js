@@ -18,21 +18,22 @@
     return html;
   };
 
-  const SUB = { "₀":"0","₁":"1","₂":"2","₃":"3","₄":"4","₅":"5","₆":"6","₇":"7","₈":"8","₉":"9","ₓ":"x","ₒ":"o","ᵢ":"i","ₙ":"n","ₑ":"e","ₜ":"t","ₛ":"s","ₐ":"a","ₖ":"k" };
-  const SUP = { "²":"2","³":"3","¹":"1","⁰":"0","ⁿ":"n" };
+  const SUB = { "ₘ":"m","ᵣ":"r","ⱼ":"j","₊":"+","₋":"-","ₗ":"l","₀":"0","₁":"1","₂":"2","₃":"3","₄":"4","₅":"5","₆":"6","₇":"7","₈":"8","₉":"9","ₓ":"x","ₒ":"o","ᵢ":"i","ₙ":"n","ₑ":"e","ₜ":"t","ₛ":"s","ₐ":"a","ₖ":"k" };
+  const SUP = { "²":"2","³":"3","¹":"1","⁰":"0","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9","ⁿ":"n","ᶻ":"z","ᵗ":"t","ˡ":"l","ⁱ":"i","ʳ":"r","ˣ":"x","ᵏ":"k","ᵐ":"m","⁺":"+","⁻":"-" };
   const GREEK = { "α":"\\alpha","β":"\\beta","γ":"\\gamma","δ":"\\delta","ε":"\\varepsilon","ζ":"\\zeta","η":"\\eta","θ":"\\theta","λ":"\\lambda","μ":"\\mu","π":"\\pi","ρ":"\\rho","σ":"\\sigma","τ":"\\tau","φ":"\\varphi","ω":"\\omega","Δ":"\\Delta","Σ":"\\Sigma","Ω":"\\Omega" };
   const subc = Object.keys(SUB).join(""), supc = Object.keys(SUP).join("");
   const greekc = Object.keys(GREEK).join("");
   // characters allowed inside a math run
-  const MATHCH = `±A-Za-z0-9${greekc}${subc}${supc}′″＝＋−＋=+\\-×÷·/()\\[\\]{}|,.≈≦≧→∫√∞_^ 　`;
+  const MATHCH = `±A-Za-z0-9${greekc}${subc}${supc}′″＝＋−＋=+\\-×÷·/()\\[\\]{}|,.≈≦≧→∫√∞_^!° 　\u0304`;
   const RUN = new RegExp(`[${MATHCH}]+`, "g");
-  const TRIGGER_A = /[＝=′″²³ₓₒᵢₙₑₜ₀-₉_^√∫≈≦≧]/;
+  const TRIGGER_A = new RegExp(`[＝=′″_^√∫≈≦≧${subc}${supc}α-ωΔΣΩ∞]|[A-Za-z0-9)\\]]!|[A-Za-z0-9)!]\\s*[×÷]\\s*[A-Za-z0-9(]|[A-Za-z]\u0304`);
   const isTrig = t => (TRIGGER_A.test(t) || (/[A-Za-z0-9α-ωΔΣΩ]/.test(t) && /[＋−+/<>×÷|]/.test(t) && /[A-Za-zα-ωΔΣΩ]/.test(t) && /[^ 0-9.,\-−+＋]/.test(t)));
 
   const DER_LETTERS = "xyqθωeiv";   // time-derivative letters (f, F, z stay as f′)
 
   function toTex(run) {
     let s = run;
+    s = s.replace(/([A-Za-z])\u0304/g, "\\bar\uE000$1\uE001").replace(/°/g, "^\uE000\\circ\uE001");
     s = s.replace(/\bd\{([^{}]*)\}/g, 'd($1)');
     // time derivatives:  T″  T′  (T = letter + optional subscripts / _x)
     const T = `([${DER_LETTERS}])((?:[${subc}]+|_[A-Za-z0-9]+)?)`;
@@ -40,8 +41,8 @@
     s = s.replace(new RegExp(T + "′", "g"), (m, l, sb) => `@D1(${l}${sb})`);
     // fractions with parenthesised/atom operands
     const GRP = `(?:\\([^()]*(?:\\([^()]*\\)[^()]*)*\\)|\\{[^{}]*\\})`;
-    const ATOM = `(?:@D[12]\\([^)]*\\)|${GRP}[${supc}]*|[A-Za-z0-9.${greekc}${subc}${supc}]+(?:_[A-Za-z0-9]+)?(?:${GRP})?[${supc}]*)`;
-    s = s.replace(new RegExp(`(${ATOM})/(${ATOM})`, "g"), (m, a, b) => {
+    const ATOM = `(?:@D[12]\\([^)]*\\)|${GRP}[${supc}]*!*|[A-Za-z0-9.${greekc}${subc}${supc}]+(?:_[A-Za-z0-9]+)?(?:${GRP})?[${supc}]*!*)`;
+    s = s.replace(new RegExp(`(?<![·×＋+−\\-A-Za-z0-9.])(${ATOM}) ?/ ?(${ATOM})`, "g"), (m, a, b) => {
       const strip = x => /^[({].*[)}]$/.test(x) ? x.slice(1, -1) : x;
       return `@F(${strip(a)})(${strip(b)})`;
     });
@@ -57,7 +58,7 @@
     s = s.replace(/≈/g, "\\approx ").replace(/≦/g, "\\leq ").replace(/≧/g, "\\geq ").replace(/→/g, "\\to ").replace(/∞/g, "\\infty ");
     s = s.replace(/∫/g, "\\int ").replace(/±/g, "\\pm ").replace(/√\(((?:[^()]|\([^()]*\))*)\)/g, "\\sqrt\uE000$1\uE001").replace(/√([A-Za-z0-9]+)/g, "\\sqrt\uE000$1\uE001");
     s = s.replace(new RegExp(`[${greekc}]`, "g"), c => GREEK[c] + " ");
-    s = s.replace(/\b(sin|cos|tan|exp|ln|log|lim)\b/g, "\\$1 ");
+    s = s.replace(/\b(sin|cos|tan|exp|ln|log|lim|arg)\b/g, "\\$1 ").replace(/\bLog\b/g, "\\operatorname\uE000Log\uE001");
     s = s.replace(/\bL\[/g, "\\mathcal\uE000L\uE001[").replace(/\b(Re|Im)\b/g, "\\operatorname\uE000$1\uE001").replace(/ at /g, "\\text\uE000 at \uE001 ").replace(/′/g, "'").replace(/″/g, "''");
     s = s.replace(/\{/g, "\\{").replace(/\}/g, "\\}");
     // restore markers
@@ -66,6 +67,7 @@
     s = s.replace(/@D2\(([^)]*)\)/g, (m, t) => `\\frac{d^{2}${t}}{dt^{2}}`);
     s = s.replace(/@D1\(([^)]*)\)/g, (m, t) => `\\frac{d${t}}{dt}`);
     s = s.replace(/@F\(((?:[^()]|\([^()]*\))*)\)\(((?:[^()]|\([^()]*\))*)\)/g, (m, a, b) => `\\frac{${a}}{${b}}`);
+    s = s.replace(/(^|[^A-Za-z0-9}])_\{/g, "$1{}_{");
     s = s.replace(/　+/g, " \\quad ").replace(/ +/g, " ").trim();
     return s;
   }
@@ -97,13 +99,44 @@
   }
   function convStr(str) {
     if (/^[a-z0-9\-_.]+$/.test(str) || str.includes("$")) return str;
-    const keep = [];   // unit words end a math run and stay plain text
-    const t = str.replace(/\b(?:rad\/s|rad|Hz|dB|sec)\b/g, m => { keep.push(m); return "\uE002"; });
-    return t.replace(RUN, convRun).replace(/\uE002/g, () => keep.shift());
+    const keep = [];   // unit words and [[term]] links end a math run and stay plain text
+    const t = str.replace(/\[\[[a-z0-9-]+(?:\|[^\]]+)?\]\]|\b(?:rad\/s|rad|Hz|dB|sec)\b/g, m => { keep.push(m); return "\uE002"; });
+    return t.replace(RUN, (run, off) => {
+      const lab = /[ぁ-んァ-ヶ一-龥]$/.test(t.slice(0, off)) && run.match(/^[0-9]+/);   // "例2", "問1": the number is a label, not math
+      return lab ? lab[0] + convRun(run.slice(lab[0].length)) : convRun(run);
+    }).replace(/\uE002/g, () => keep.shift());
   }
 
   /* Unicode-style math in plain text -> text with $...$ markers. */
   ST.unimath = convStr;
   /* HTML string built at runtime: render the math found in its text parts (tags are kept as they are). */
   ST.am = html => String(html).split(/(<[^>]*>)/).map((p, i) => i % 2 || !p ? p : p.indexOf("$") >= 0 ? p : convStr(p).replace(/\$([^$]+)\$/g, (m, t) => ST.tex(t))).join("");
+
+  /* Text nodes under `root` (not SVG, code, form fields or math already rendered): render Unicode-style math with KaTeX. */
+  const SKIP = "svg, code, pre, input, textarea, select, script, style, .tex, .katex";
+  ST.amTree = root => {
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), hits = [];
+    for (let n = w.nextNode(); n; n = w.nextNode()) {
+      const el = n.parentElement;
+      if (!el || el.closest(SKIP) || !n.nodeValue.trim()) continue;
+      const out = convStr(n.nodeValue);
+      if (out !== n.nodeValue) hits.push([n, out]);
+    }
+    hits.forEach(([n, out]) => {
+      const f = document.createDocumentFragment();
+      out.split(/\$([^$]+)\$/).forEach((part, i) => {
+        if (i % 2) { const sp = document.createElement("span"); sp.innerHTML = ST.tex(part); f.appendChild(sp.firstChild); }
+        else if (part) f.appendChild(document.createTextNode(part));
+      });
+      n.parentNode.replaceChild(f, n);
+    });
+  };
+  /* Keep a lab's text rendered as it is redrawn (labs rewrite their captions with innerHTML / textContent). */
+  ST.watchTree = root => {
+    let busy = false;
+    const run = () => { if (busy) return; busy = true; try { ST.amTree(root); } finally { busy = false; } };
+    const mo = new MutationObserver(muts => { if (!busy && muts.some(m => !(m.target.closest && m.target.closest(".tex")))) { mo.disconnect(); run(); mo.observe(root, { childList: true, subtree: true, characterData: true }); } });
+    run(); mo.observe(root, { childList: true, subtree: true, characterData: true });
+    return () => mo.disconnect();
+  };
 })(window.ST = window.ST || {});
