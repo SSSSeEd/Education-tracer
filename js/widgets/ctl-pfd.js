@@ -30,8 +30,10 @@
         <div class="btns"><button type="button" class="btn primary" data-add>＋ 1項ずつ足す</button><button type="button" class="btn" data-all>全部</button><button type="button" class="btn" data-rst>↺ 最初から</button></div>
         <div class="stage" data-pt style="padding:6px"></div>
         <div class="hexbox" data-parts style="font-size:13px"></div>
-        <div class="lab-big" aria-live="polite" data-big></div><p class="cap" data-cap></p>`;
+        <div class="lab-big" aria-live="polite" data-big></div><p class="cap" data-cap></p>
+        <details><summary style="cursor:pointer;padding:8px 0;font-weight:700">ラプラス変換の表を見る(1項ずつ戻すときに使う)</summary><div data-tab></div></details>`;
       const $ = s => el.querySelector(s), pt = $("[data-pt]"), parts = $("[data-parts]"), big = $("[data-big]"), cap = $("[data-cap]");
+      $("[data-tab]").innerHTML = ctl.lapTable(); ctl.wireLapTable($("[data-tab]"));
       const draw = () => {
         const ex = EX[key], N = ex.parts.length, ts = Array.from({ length: T / DT + 1 }, (_, i) => i * DT);
         $("[data-F]").innerHTML = ST.am(`F(s) ＝ ${ex.F}<br>${ex.steps.join("<br>")}`);
