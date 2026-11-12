@@ -13,7 +13,7 @@
     meaning: "足し算・引き算は矢印の足し引き(平行四辺形)、共役は実軸に関する鏡写し、絶対値 |z| は原点からの距離です。点をドラッグして確かめてください。",
     mount(el) {
       let mode = "point", snap = .5, z = [2, 1], w = [-1, 2];
-      el.innerHTML = `<div><p class="lab-label">見方</p>${ST.segHtml("mode", [["point", "点と大きさ"], ["sum", "和と差"], ["conj", "共役"]], mode)}</div>
+      el.innerHTML = `<div><p class="lab-label">見方</p>${ST.segHtml("mode", [["point", "点と大きさ"], ["sum", "和と差"], ["conj", "共役"], ["proj", "射影"]], mode)}</div>
         <div class="stage"><svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:420px;display:block;margin:auto" role="img" aria-label="複素平面"></svg></div>
         <div><p class="lab-label">ドラッグのしかた</p>${ST.segHtml("snap", [[.5, "0.5 刻み"], [0, "なめらか"]], snap)}</div>
         <div class="lab-big" aria-live="polite" data-big></div><p class="cap" data-cap></p>`;
@@ -32,6 +32,11 @@
           s += cx.handle(g, z, "var(--packet)") + cx.handle(g, w, "var(--info)") + cx.dot(g, z, "var(--packet)", "z") + cx.dot(g, w, "var(--info)", "w") + cx.dot(g, sm, "var(--ok)", "z＋w", { dx: 8, dy: -10 });
           b = `<b>z＋w ＝ ${cx.fmt(sm)}</b><span>(${cx.fmt(z)}) ＋ (${cx.fmt(w)})　<span class="cap" style="font-size:15px">z−w ＝ ${cx.fmt(df)}</span></span>`;
           c = "実部は実部どうし、虚部は虚部どうしを足します。z と w の矢印を平行四辺形の2辺にすると、対角線が z＋w です(ベクトルの和と同じ)。";
+        } else if (mode === "proj") {
+          s += `<line x1="${g.X(z[0])}" y1="${g.Y(z[1])}" x2="${g.X(z[0])}" y2="${g.Y(0)}" stroke="var(--info)" stroke-width="2" stroke-dasharray="5 3"/><line x1="${g.X(z[0])}" y1="${g.Y(z[1])}" x2="${g.X(0)}" y2="${g.Y(z[1])}" stroke="var(--ok)" stroke-width="2" stroke-dasharray="5 3"/>`;
+          s += cx.arrow(g, [0, 0], z, "var(--packet)", 2) + cx.dot(g, [z[0], 0], "var(--info)", "Re z", { r: 6, dy: 20, dx: -10 }) + cx.dot(g, [0, z[1]], "var(--ok)", "Im z", { r: 6, dx: -48, dy: -8 }) + cx.handle(g, z, "var(--packet)") + cx.dot(g, z, "var(--packet)", "z");
+          b = `<b>Re z ＝ ${cx.num(z[0])}　Im z ＝ ${cx.num(z[1])}</b><span>z ＝ ${cx.fmt(z)} の、実軸・虚軸への「影」</span>`;
+          c = "射影(しゃえい)は、点を軸の上に落とす写し方です。z を実軸に落とした点が実部 Re z(ℂ から ℝ への写像 z ↦ Re z)、虚軸に落とした点が虚部 Im z です。落とすと、もとの点は1つに決まらなくなります(同じ影をもつ点は無数にある)。";
         } else {
           const cj = cx.conj(z);
           s += `<line x1="${g.X(z[0])}" y1="${g.Y(z[1])}" x2="${g.X(cj[0])}" y2="${g.Y(cj[1])}" stroke="var(--muted)" stroke-dasharray="4 3"/>`;

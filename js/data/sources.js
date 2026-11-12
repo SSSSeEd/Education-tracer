@@ -21,5 +21,8 @@ ST.SRC = {
   ce5: {org:"制御工学Ⅰ 授業資料", label:"4S-J 制御工学Ⅰ 第5回(伝達関数・強制応答と自由応答・平衡点・演習)", url:"https://github.com/SSSSeEd/education-tracer", checked:"2026-11-11"},
   ce6: {org:"制御工学Ⅰ 授業資料", label:"4S-J 制御工学Ⅰ 第6回(基本要素の伝達関数・ブロック線図・直列と並列)", url:"https://github.com/SSSSeEd/education-tracer", checked:"2026-11-11"},
   ce7: {org:"制御工学Ⅰ 授業資料", label:"機械系2次遅れ要素の運動方程式(つり合い式)に関する簡単な解説", url:"https://github.com/SSSSeEd/education-tracer", checked:"2026-11-11"},
-  im5: {org:"情報数学 授業資料", label:"後期 情報数学 第5回(重複組合せの演習・階段のぼり・フィボナッチ数)", url:"https://github.com/SSSSeEd/education-tracer", checked:"2026-11-11"}
+  im5: {org:"情報数学 授業資料", label:"後期 情報数学 第5回(重複組合せの演習・階段のぼり・フィボナッチ数)", url:"https://github.com/SSSSeEd/education-tracer", checked:"2026-11-11"},
+  am9: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"対数関数と冪乗関数", url:"https://www.umezakinaoya.com/notes/logarithm-power/", checked:"2026-11-12"},
+  am10: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"線積分の定義", url:"https://www.umezakinaoya.com/notes/contour-integral-definition/", checked:"2026-11-12"},
+  am11: {org:"梅崎直也「複素解析」(授業の推奨サイト)", label:"原始関数の存在と閉曲線での線積分", url:"https://www.umezakinaoya.com/notes/primitive-function/", checked:"2026-11-12"}
 };
