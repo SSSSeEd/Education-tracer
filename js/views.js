@@ -113,10 +113,10 @@
   ST.view("lesson", (v, id) => {
     const l = ST.LESSON[id]; if (!l) return ST.views.courses(v);
     const c = ST.COURSE[l.course], prev = c.lessons[l.idx - 1], next = c.lessons[l.idx + 1] || (ST.COURSES[ST.COURSES.indexOf(c) + 1] || {}).lessons?.[0];
-    const block = b => b.p ? `<p>${md(b.p)}</p>` : b.h ? `<h2>${esc(b.h)}</h2>` : b.list ? `<ul>${b.list.map(x => `<li>${md(x)}</li>`).join("")}</ul>`
+    const block = b => b.p ? `<p>${md(b.p)}</p>` : b.h ? `<h2>${md(b.h)}</h2>` : b.list ? `<ul>${b.list.map(x => `<li>${md(x)}</li>`).join("")}</ul>`
       : b.w ? `<div data-widget="${b.w}" data-opts='${esc(JSON.stringify({ hideProp: true, ...(b.o || {}) }))}'></div>` : b.callout ? `<div class="callout ${b.kind || "info"}">${md(b.callout)}</div>`
       : b.prop ? ST.propHtml(b.prop)
-      : b.ex ? `<div class="card ex" data-ex="${esc(JSON.stringify({ a: b.ex.a, term: b.ex.term, exp: b.ex.exp }))}"><div class="eyebrow">練習問題</div><p class="q-text">${md(b.ex.q)}</p><div class="q-opts">${ST.shuffle(b.ex.a.map((_, i) => i)).map(i => `<button type="button" data-xi="${i}">${esc(b.ex.a[i])}</button>`).join("")}</div><div data-xexp></div></div>`
+      : b.ex ? `<div class="card ex" data-ex="${esc(JSON.stringify({ a: b.ex.a, term: b.ex.term, exp: b.ex.exp }))}"><div class="eyebrow">練習問題</div><p class="q-text">${md(b.ex.q)}</p><div class="q-opts">${ST.shuffle(b.ex.a.map((_, i) => i)).map(i => `<button type="button" data-xi="${i}">${md(b.ex.a[i])}</button>`).join("")}</div><div data-xexp></div></div>`
       : b.key ? `<div class="keypoints"><div class="eyebrow">このレッスンのポイント</div><ul>${b.key.map(x => `<li>${md(x)}</li>`).join("")}</ul></div>` : "";
     // Group consecutive prose blocks into reading columns; widgets span the full width.
     let html = "", buf = "";
@@ -150,7 +150,7 @@
     box.dataset.done = "1";
     const d = JSON.parse(box.dataset.ex), i = +btn.dataset.xi, ok = i === 0;
     ST.$$("[data-xi]", box).forEach(b => { const k = +b.dataset.xi; if (k === 0) b.classList.add("right"); else if (k === i) b.classList.add("wrong"); b.disabled = true; });
-    box.querySelector("[data-xexp]").innerHTML = `<div style="margin-top:10px;font-size:14px"><span class="chip ${ok ? "ok" : "attack"}">${ok ? "正解" : "不正解"}</span> 正解は「${esc(d.a[0])}」<p style="margin:8px 0 0">${md(d.exp)}</p></div>`;
+    box.querySelector("[data-xexp]").innerHTML = `<div style="margin-top:10px;font-size:14px"><span class="chip ${ok ? "ok" : "attack"}">${ok ? "正解" : "不正解"}</span> 正解は「${md(d.a[0])}」<p style="margin:8px 0 0">${md(d.exp)}</p></div>`;
     ST.P.quiz.answered++; if (ok) ST.P.quiz.correct++;
     if (d.term) { const st = ST.termStat(d.term); ok ? st.c = (st.c || 0) + 1 : st.w = (st.w || 0) + 1; ST.P.terms[d.term] = st; }
     ST.touchStreak(); ST.save();
@@ -210,7 +210,7 @@
     const draw = () => {
       const q = termFilter.q.trim().toLowerCase();
       const items = ST.TERMS.filter(t => (termFilter.cat === "すべて" || t.cat === termFilter.cat) && (!q || (t.name + t.en + t.summary).toLowerCase().includes(q)));
-      v.querySelector("[data-tl]").innerHTML = items.length ? items.map(t => `<a class="row" href="#term-${t.id}"><div class="body"><div class="term-name"><span class="t">${esc(t.name)}</span><span class="en">${esc(t.en)}</span></div><div class="s">${esc(t.summary)}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><span class="chip">${t.cat}</span>${ST.masteryDots(t.id)}</div></a>`).join("") : `<p class="empty">「${esc(termFilter.q)}」に一致する用語はありません。</p>`;
+      v.querySelector("[data-tl]").innerHTML = items.length ? items.map(t => `<a class="row" href="#term-${t.id}"><div class="body"><div class="term-name"><span class="t">${esc(t.name)}</span><span class="en">${esc(t.en)}</span></div><div class="s">${md(t.summary)}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><span class="chip">${t.cat}</span>${ST.masteryDots(t.id)}</div></a>`).join("") : `<p class="empty">「${esc(termFilter.q)}」に一致する用語はありません。</p>`;
     };
     v.querySelector("#term-q").oninput = e => { termFilter.q = e.target.value; draw(); };
     ST.$$("[data-cat]", v).forEach(b => b.onclick = () => { termFilter.cat = b.dataset.cat; ST.$$("[data-cat]", v).forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); });
@@ -258,7 +258,7 @@
       const it = quiz.items[quiz.i], t = ST.TERM[it.term];
       v.innerHTML = `<div class="page-h"><div class="eyebrow">Quiz</div><h1>理解度チェック</h1></div>
         <div class="card reading" style="width:100%"><div class="q-meta"><span class="date">Q${quiz.i + 1} / ${quiz.items.length}</span><span class="chip">${esc(t.name)}</span></div>
-        <p class="q-text">${esc(it.q)}</p><div class="q-opts">${it.order.map(i => `<button type="button" data-i="${i}">${esc(it.a[i])}</button>`).join("")}</div><div data-exp></div></div>`;
+        <p class="q-text">${md(it.q)}</p><div class="q-opts">${it.order.map(i => `<button type="button" data-i="${i}">${md(it.a[i])}</button>`).join("")}</div><div data-exp></div></div>`;
       ST.$$("[data-i]", v).forEach(b => b.onclick = () => answer(+b.dataset.i));
       if (quiz.picked !== null) show();
     };
@@ -271,7 +271,7 @@
     const show = () => {
       const it = quiz.items[quiz.i], ok = quiz.picked === 0;
       ST.$$("[data-i]", v).forEach(b => { const i = +b.dataset.i; if (i === 0) b.classList.add("right"); else if (i === quiz.picked) b.classList.add("wrong"); b.disabled = true; });
-      v.querySelector("[data-exp]").innerHTML = `<div style="margin-top:12px;font-size:14px"><span class="chip ${ok ? "ok" : "attack"}">${ok ? "正解" : "不正解"}</span> 正解は「${esc(it.a[0])}」<p style="margin:8px 0">${esc(it.exp)}</p><a href="#term-${it.term}">用語を確認する</a> · 出典: ${ST.TERM[it.term].src.map(k => `<a href="${esc(ST.SRC[k].url)}" target="_blank" rel="noopener">${esc(ST.SRC[k].org)}</a>`).join("、")}</div>
+      v.querySelector("[data-exp]").innerHTML = `<div style="margin-top:12px;font-size:14px"><span class="chip ${ok ? "ok" : "attack"}">${ok ? "正解" : "不正解"}</span> 正解は「${md(it.a[0])}」<p style="margin:8px 0">${md(it.exp)}</p><a href="#term-${it.term}">用語を確認する</a> · 出典: ${ST.TERM[it.term].src.map(k => `<a href="${esc(ST.SRC[k].url)}" target="_blank" rel="noopener">${esc(ST.SRC[k].org)}</a>`).join("、")}</div>
         <div class="btns" style="margin-top:12px"><button class="btn primary" type="button" data-next>${quiz.i + 1 < quiz.items.length ? "次の問題 ›" : "結果を見る"}</button></div>`;
       v.querySelector("[data-next]").onclick = () => { quiz.picked = null; quiz.i++; if (quiz.i >= quiz.items.length) quiz.finished = true; draw(); window.scrollTo(0, 0); };
     };

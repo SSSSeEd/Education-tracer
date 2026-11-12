@@ -6,9 +6,9 @@
   ST.widget("blk", {
     title: "ブロック線図:直列と並列を1つにまとめる",
     group: "ctl", name: "ブロック線図の結合", desc: "2つのブロックを直列・並列につないだ結果が、まとめた1つのブロックと一致する", order: 11, tag: "ブロック線図",
-    formula: "直列: Y ＝ G₁G₂ U　　並列: Y ＝ (G₁ ± G₂) U",
+    formula: "直列: $Y = G_{1}G_{2} U$　　並列: $Y = (G_{1} \\pm G_{2}) U$",
     says: "ブロックは伝達関数、矢印は信号、引き出し点は信号の分岐、加え合わせ点は足し算(または引き算)を表します。直列につながったブロックは掛け算、並列は、加え合わせ点の符号に応じた足し算(引き算)で1つにまとめられます。",
-    meaning: "出力の途中経過 W(s)＝G₁U、Y＝G₂W を順に代入すると、Y＝G₂G₁U になります(並列も同様に Y＝W±V)。下では、2つのブロックを1つずつ動かした結果(橙)と、まとめた1つのブロックの結果(緑の点線)を重ねて、一致することを確かめます。",
+    meaning: "出力の途中経過 $W(s)=G_{1}U$、$Y=G_{2}W$ を順に代入すると、$Y=G_{2}G_{1}U$ になります(並列も同様に $Y=W\\pm V$)。下では、2つのブロックを1つずつ動かした結果(橙)と、まとめた1つのブロックの結果(緑の点線)を重ねて、一致することを確かめます。",
     mount(el) {
       let mode = "ser", K = 2, T1 = 1, T2 = 2.5, sim = null, ply = null;
       el.innerHTML = `<div><p class="lab-label">つなぎ方</p>${ST.segHtml("mode", [["ser", "直列(G₁G₂)"], ["par", "並列 ＋(G₁＋G₂)"], ["neg", "並列 −(G₁−G₂)"]], mode)}</div>
@@ -44,7 +44,7 @@
         pt.innerHTML = ctl.plot({ H: 146, x0: 0, x1: T, series: [{ dt: DT, y: sim.comb, color: "var(--muted)", w: 5, label: "まとめた1ブロック" }].concat(ser, [{ dt: DT, y: sim.Y, color: "var(--packet)", label: "出力 Y" }]), t, upto: t, xlabel: "時間 t(入力はステップ U＝1)", aria: "出力の比較" });
       };
       const note = () => {
-        eq.innerHTML = mode === "ser" ? `W ＝ G₁U、Y ＝ G₂W ⇒ Y ＝ G₂G₁U ＝ {G₁G₂}U<br>G₁G₂ ＝ ${n(K)} / ((${n(T1)}s＋1)(${n(T2)}s＋1))` : `Y ＝ W ${mode === "neg" ? "−" : "＋"} V ＝ G₁U ${mode === "neg" ? "−" : "＋"} G₂U ＝ {G₁ ${mode === "neg" ? "−" : "＋"} G₂}U<br>最終値 ${n(K)} ${mode === "neg" ? "−" : "＋"} 1 ＝ ${n(mode === "neg" ? K - 1 : K + 1)}`;
+        eq.innerHTML = ST.am(mode === "ser" ? `W ＝ G₁U、Y ＝ G₂W ⇒ Y ＝ G₂G₁U ＝ {G₁G₂}U<br>G₁G₂ ＝ ${n(K)} / ((${n(T1)}s＋1)(${n(T2)}s＋1))` : `Y ＝ W ${mode === "neg" ? "−" : "＋"} V ＝ G₁U ${mode === "neg" ? "−" : "＋"} G₂U ＝ {G₁ ${mode === "neg" ? "−" : "＋"} G₂}U<br>最終値 ${n(K)} ${mode === "neg" ? "−" : "＋"} 1 ＝ ${n(mode === "neg" ? K - 1 : K + 1)}`);
         cap.innerHTML = `まとめた1つのブロックの出力(灰)と、2つを別々に動かした出力(橙)の最大の差は ${sim.err.toExponential(1)} で、重なっています。` + (mode === "neg" ? " 引き算にすると、符号の違いで、出力が負になったり山ができたりします(加え合わせ点の符号で結果が変わる)。" : "");
       };
       const redo = () => { run(); note(); ply.restart(); ST.markLab("blk"); };

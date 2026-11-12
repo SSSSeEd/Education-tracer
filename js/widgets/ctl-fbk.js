@@ -6,9 +6,9 @@
   ST.widget("fbk", {
     title: "フィードバック制御:目標値 20 に近づけるか",
     group: "ctl", name: "フィードバック制御", desc: "プラントが設計とずれても、フィードバックで目標値に近づくか", order: 1, tag: "制御",
-    formula: "u ＝ K (r − y)　　出力は y ← y ＋ P u",
-    says: "出力 y を目標値 r と比べ、ずれ e ＝ r − y に比例した入力 u を作って、ずれを小さくしていく制御です。ずれは1回ごとに (1 − P K) 倍になります。",
-    meaning: "設計では P＝4 としたので K＝1/4。でも本当のプラントは P＝5 かもしれません。フィードバックなしだと 25 のままずれますが、ありなら、ずれを見て直していくので 20 に近づきます。P をもっと大きくして |1 − P K| が 1 を超えると、逆に振れが大きくなって発散します。",
+    formula: "$u = K (r - y)$　　出力は y ← $y + P u$",
+    says: "出力 y を目標値 r と比べ、ずれ $e = r - y$ に比例した入力 u を作って、ずれを小さくしていく制御です。ずれは1回ごとに $(1 - P K)$ 倍になります。",
+    meaning: "設計では $P=4$ としたので $K=\\frac{1}{4}$。でも本当のプラントは $P=5$ かもしれません。フィードバックなしだと 25 のままずれますが、ありなら、ずれを見て直していくので 20 に近づきます。P をもっと大きくして $|1 - P K|$ が 1 を超えると、逆に振れが大きくなって発散します。",
     mount(el) {
       let P = 5, K = .25, fb = true;
       el.innerHTML = `<div><p class="lab-label">制御の方式</p>${ST.segHtml("mode", [["fb", "フィードバックあり"], ["ff", "なし(フィードフォワード)"]], "fb")}</div>
@@ -26,11 +26,11 @@
         plot.innerHTML = ctl.plot({ H: 150, x0: 0, x1: N, series: [{ x: ys.map((_, i) => i), y: ys, color: fb ? "var(--info)" : "var(--packet)", marks: true, label: "出力 y" }], hlines: [{ y: R, label: "目標 r ＝ 20", color: "var(--ok)" }], xlabel: "回 t", aria: "出力 y の変化" });
         const last = ys[N], rho = Math.abs(1 - P * K), ok = Math.abs(last - R) < .5;
         if (fb) {
-          big.innerHTML = `<b>${ok ? "収束" : rho > 1 ? "発散" : "まだ近づいている"}</b><span>ずれは毎回 ${ctl.n(1 - P * K, 3)} 倍(|1 − P K| ＝ ${ctl.n(rho, 3)})</span>`;
+          big.innerHTML = ST.am(`<b>${ok ? "収束" : rho > 1 ? "発散" : "まだ近づいている"}</b><span>ずれは毎回 ${ctl.n(1 - P * K, 3)} 倍(|1 − P K| ＝ ${ctl.n(rho, 3)})</span>`);
           cap.innerHTML = rho < 1 ? "|1 − P K| が 1 より小さいので、ずれがだんだん小さくなり、y は 20 に近づきます。P が設計値からずれても、ずれを見て直すので目標に届きます。" : "|1 − P K| が 1 より大きいので、ずれが毎回大きくなって、y は目標のまわりを大きく振れながら離れていきます(発散)。ゲイン K が大きすぎるか、P が大きすぎます。K を小さくすると収まります。";
         } else {
-          big.innerHTML = `<b>y ＝ ${ctl.n(P * K * R, 2)}</b><span>目標 ${R} との差 ${ctl.n(P * K * R - R, 2)}</span>`;
-          cap.innerHTML = "フィードバックがないと、u ＝ K r ＝ 5 を入れ続けるだけです。本当の P が 4 でなければ、y ＝ P·u は目標からずれたままで、自分では直せません。";
+          big.innerHTML = ST.am(`<b>y ＝ ${ctl.n(P * K * R, 2)}</b><span>目標 ${R} との差 ${ctl.n(P * K * R - R, 2)}</span>`);
+          cap.innerHTML = ST.am("フィードバックがないと、u ＝ K r ＝ 5 を入れ続けるだけです。本当の P が 4 でなければ、y ＝ P·u は目標からずれたままで、自分では直せません。");
         }
         tab.innerHTML = "t　　e　　　u　　　Δy　　 y<br>" + rows.slice(0, 5).map(r => [r.t, ctl.n(r.e, 3), ctl.n(r.u, 3), ctl.n(r.d, 3), ctl.n(r.y, 3)].map((s, i) => String(s).padEnd(i ? 8 : 3, " ")).join("")).join("<br>");
       };

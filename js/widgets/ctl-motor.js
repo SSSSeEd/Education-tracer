@@ -6,8 +6,8 @@
   ST.widget("motor", {
     title: "直流サーボモータ:電圧をかけて、電流と回転を見る",
     group: "ctl", name: "直流サーボモータ", desc: "電圧をかけると、電流・トルク・回転・逆起電力がどう動くか", order: 4, tag: "電気系と機械系",
-    formula: "L di/dt ＋ R i ＝ e₁ − K ω　　J dω/dt ＋ B ω ＝ K i",
-    says: "電気側では、電圧 e₁ から、抵抗とコイルの電圧降下と、回転が生む逆起電力 e₂ ＝ K ω を引いた分が電流を流します。機械側では、トルク K i が、慣性 J と粘性抵抗 B のつり合いで角速度 ω を決めます。",
+    formula: "$L \\frac{di}{dt} + R i = e_{1} - K \\omega \\quad J \\frac{d\\omega }{dt} + B \\omega = K i$",
+    says: "電気側では、電圧 $e_{1}$ から、抵抗とコイルの電圧降下と、回転が生む逆起電力 $e_{2} = K \\omega$ を引いた分が電流を流します。機械側では、トルク K i が、慣性 J と粘性抵抗 B のつり合いで角速度 ω を決めます。",
     meaning: "電圧をかけた瞬間は、まだ回っていないので逆起電力が 0。電流がどっと流れてトルクが大きく出ます。回り始めると逆起電力が増えて電流が減り、ω は一定値に落ち着きます。電気の式と機械の式が、i と ω でつながっています。",
     mount(el) {
       let E = 5, R = 1, L = .2, K = 1, J = 1, B = .3, sim = null, ply = null;
@@ -33,7 +33,7 @@
         pi.innerHTML = ctl.plot({ H: 104, x0: 0, x1: T, series: [{ dt: DT, y: sim.i, color: "var(--ok)", label: "電流 i(t)" }], hlines: [{ y: E / R, label: "E/R(回転前の最大)", color: "var(--muted)" }], t, upto: t, xlabel: "時間 s", aria: "電流" });
         pw.innerHTML = ctl.plot({ H: 104, x0: 0, x1: T, series: [{ dt: DT, y: sim.w, color: "var(--packet)", label: "角速度 ω(t)" }], hlines: [{ y: K * E / (R * B + K * K), label: "最終値", color: "var(--ok)" }], t, upto: t, xlabel: "時間 s", aria: "角速度" });
       };
-      const note = () => { cap.innerHTML = `最終的な角速度は ω ＝ K e₁ /(R B ＋ K²) ＝ ${ctl.n(K * E / (R * B + K * K), 2)} rad/s、そのときの電流は i ＝ B ω/K ＝ ${ctl.n(B * K * E / (R * B + K * K) / K, 2)} A。電圧をかけた直後は電流が大きく(最大 E/R)、回り出すと逆起電力のぶんだけ減ります。これが「逆起電力」のはたらきです。B を 0 にすると、負荷がなく逆起電力が電圧に近づくまで回ります。`; };
+      const note = () => { cap.innerHTML = ST.am(`最終的な角速度は ω ＝ K e₁ /(R B ＋ K²) ＝ ${ctl.n(K * E / (R * B + K * K), 2)} rad/s、そのときの電流は i ＝ B ω/K ＝ ${ctl.n(B * K * E / (R * B + K * K) / K, 2)} A。電圧をかけた直後は電流が大きく(最大 E/R)、回り出すと逆起電力のぶんだけ減ります。これが「逆起電力」のはたらきです。B を 0 にすると、負荷がなく逆起電力が電圧に近づくまで回ります。`); };
       const redo = () => { run(); note(); ply.restart(); ST.markLab("motor"); };
       ply = ctl.player($("[data-ply]"), { T, draw: t => sim && draw(t), speed: 1.2 });
       run(); note(); ply.restart();
