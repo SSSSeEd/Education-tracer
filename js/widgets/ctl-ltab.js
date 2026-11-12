@@ -1,10 +1,10 @@
 "use strict";
 /* Lab for ラプラス変換表の使い方 (第3回・第4回): F(s) を表の行に合わせて逆変換する。
    表は教科書の左右2列の表を、グループごとに色分け・折りたたみにした(_lap.js)。威圧感を減らすため、最初は閉じていて、
-   使う行のグループだけが開いて行が光る。時間とともに ① F(s) を出す → ② 該当する行が光る → ③ 係数を整えて表の形にする → ④ 答え。
+   使う行のグループだけが開いて行が光る。① F(s) を出す → ② 該当する行が光る → ③ 係数を整えて表の形にする → ④ 答え。
    答えは数値でも確かめる(答えの f(t) を数値でラプラス変換して s＝2 の F と比べる)。 */
 (function (ST) {
-  const ctl = ST.ctl, T = 5, E = Math.exp;
+  const ctl = ST.ctl, E = Math.exp;
   /* row: _lap.js の行のキー。表は e^(−at) ↔ 1/(s＋a) の形(教科書の表)で引く。 */
   const EX = {
     e1: { name: "例A 係数をくくる", F: "\\frac{6}{2s+4}", Fv: s => 6 / (2 * s + 4), row: "exp",
@@ -24,9 +24,8 @@
     says: "逆変換は表を逆に引きます。F(s) の形に合う行を見つけ、係数(定数倍)を表の形にそろえます。定数 k は、変換しても逆変換しても、そのまま前に出ます。",
     meaning: "「分母の形で行を決める → 分子や分母の係数を表の形にそろえる(定数倍を前に出す)」の2段です。表は全部を覚える必要はなく、色のグループ(基本・べき・指数・振動)を知っていれば、使う行だけ開けば十分です。",
     mount(el) {
-      let key = "e1", ply = null, setActive = null, last = null;
+      let key = "e1", setActive = null;
       el.innerHTML = `<div><p class="lab-label">例題</p>${ST.segHtml("ex", Object.entries(EX).map(([k, x]) => [k, x.name]), key)}</div>
-        <div data-ply></div>
         <div class="card" style="padding:10px"><div class="eyebrow">① 逆変換したい F(s)</div><div data-F style="font-size:18px;margin-top:4px"></div></div>
         <div><p class="lab-label">② 表(色のグループをタップすると開きます)</p><div data-tab></div></div>
         <div class="hexbox" data-steps style="font-size:14px;min-height:40px;line-height:1.9"></div>
@@ -34,24 +33,19 @@
       const $ = s => el.querySelector(s), st = $("[data-steps]"), big = $("[data-big]"), cap = $("[data-cap]");
       $("[data-tab]").innerHTML = ctl.lapTable();
       setActive = ctl.wireLapTable($("[data-tab]"));
-      const draw = t => {
+      const draw = () => {
         const ex = EX[key];
-        const want = t >= 1.2 ? ex.row : null;
-        if (want !== last) { last = want; setActive(want); }
+        setActive(ex.row);
         $("[data-F]").innerHTML = `${ST.tex("F(s) = " + ex.F, true)}`;
-        const n = ex.steps.length, shown = clamp(Math.floor((t - 2.4) / 1.1) + 1, 0, n);
-        st.innerHTML = ex.steps.map((x, i) => `<span style="${i < shown ? "" : "opacity:.18"}">③${i + 1}. ${ST.md(x)}</span>`).join("<br>");
-        const done = t >= 4.6;
-        big.innerHTML = done ? `<b>${ST.tex("f(t) = " + ex.ans, true)}</b><span>表の行に合わせて逆変換しました</span>` : `<b>${shown ? "係数をととのえ中…" : t >= 1.2 ? "表の行が見つかりました" : "表と見比べます…"}</b><span>▶ で最初から動かせます</span>`;
+        st.innerHTML = ex.steps.map((x, i) => `③${i + 1}. ${ST.md(x)}`).join("<br>");
+        big.innerHTML = `<b>${ST.tex("f(t) = " + ex.ans, true)}</b><span>表の行に合わせて逆変換しました</span>`;
       };
       const check = () => {
         const ex = EX[key], ln = ctl.laplaceNum(ex.f, 2), Fv = ex.Fv(2);
         cap.innerHTML = ST.md(`確かめ: 答えの f(t) を数値でラプラス変換して $s = 2$ とすると ${ctl.n(ln, 4)}、$F(2) = ${ctl.n(Fv, 4)}$。${Math.abs(ln - Fv) < 1e-3 ? "一致しています。" : "ずれています。"}`);
       };
-      ply = ctl.player($("[data-ply]"), { T, draw });
-      check(); ply.restart();
-      ST.wireSeg(el, "ex", v => { key = v; last = undefined; check(); ply.restart(); ST.markLab("ltab"); });
-      return () => ply.stop();
+      draw(); check();
+      ST.wireSeg(el, "ex", v => { key = v; draw(); check(); ST.markLab("ltab"); });
     }
   });
 })(window.ST);
