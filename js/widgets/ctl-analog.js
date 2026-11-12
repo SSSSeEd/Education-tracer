@@ -10,6 +10,13 @@
     { id: "rot", name: "回転系", eq: "J θ″ ＋ B θ′ ＋ K θ ＝ τ", col: ["トルク τ", "角度 θ", "慣性 J", "粘性 B", "ねじりばね K"], unit: "rad" },
     { id: "water", name: "水位系(発展)", eq: "ρAL x″ ＋ r x′ ＋ 2ρgA x ＝ ΔP·A", col: ["圧力差 ΔP", "水位 x", "水の質量 ρAL", "管の抵抗 r", "重力 2ρgA"], unit: "m" }
   ];
+  /* 力(電気系は電圧、水位系は圧力)の行の名前。u ＝ 入力、ばね、摩擦、そして合計(慣性) */
+  const FORCES = {
+    mech: ["外力 f", "ばねの力 −K x", "ダンパの力 −C v", "合力 ＝ 慣性 M a"],
+    elec: ["電源の電圧 e", "コンデンサ −q/C", "抵抗 −R i", "残り ＝ コイル L di/dt"],
+    rot: ["トルク τ", "ねじりばね −K θ", "粘性 −B ω", "合計 ＝ 慣性 J dω/dt"],
+    water: ["圧力差の力 ΔP·A", "水の重さ −2ρgA x", "管の抵抗 −r v", "合力 ＝ 水の慣性"]
+  };
   const ROLES = [["入力", "var(--attack)"], ["出力", "var(--ink)"], ["慣性(動きにくさ)", "var(--packet)"], ["摩擦(エネルギーを逃がす)", "var(--ok)"], ["復元(ためて戻す)", "var(--info)"]];
   const sym = (kind, x, y, v, lab) => ctl.sym(kind, x, y, v, lab);
 
@@ -61,18 +68,16 @@
     group: "ctl", name: "4つのモデルの対応表", desc: "機械・電気・回転・水位が同じ形の式になる様子と、対応表を順に光らせるアニメーション", order: 14, tag: "アナログ",
     formula: "$m \\frac{d^{2}x}{dt^{2}} + c \\frac{dx}{dt} + k x = u \\quad$(質量相当 m、摩擦相当 c、復元相当 k、入力 u、出力 x)",
     says: "どの分野でも、立て方は同じです。①基準(出力にする量)を決める ②動きにくさ(慣性)・摩擦・復元の3つの力を書く ③それらの和が入力、とする。分野が変わるのは、量の名前と単位だけです。",
-    meaning: "機械の質量 M ↔ コイル L ↔ 慣性モーメント J ↔ 水の質量、のように1対1で対応します。ζ を変えると、4つの動きがそろって揺れたり揺れなくなったりします。「4つ重ねる」では、4本の曲線が完全に重なります。",
+    meaning: "機械の質量 M ↔ コイル L ↔ 慣性モーメント J ↔ 水の質量、のように1対1で対応します。「4つ重ねる」では、4つの図が同じ動きをします。",
     mount(el) {
-      let zeta = .3, mode = "mech", sim = null, ply = null;
+      let zeta = .4, mode = "mech", sim = null, ply = null;
       el.innerHTML = `<div><p class="lab-label">どのモデルを見る?</p>${ST.segHtml("mode", [["mech", "機械系"], ["elec", "電気系"], ["rot", "回転系"], ["water", "水位系(発展)"], ["all", "4つ重ねる"]], mode)}</div>
-        ${ctl.sliders([{ id: "z", label: "減衰の強さ ζ(0.3 だと揺れる、1 以上で揺れない)", min: .1, max: 1.5, step: .1, v: zeta }])}
         <div class="hexbox" data-eq style="font-size:13px"></div>
         <div data-ply></div>
         <div class="stage" style="padding:4px"><svg viewBox="0 0 340 196" style="width:100%;display:block" role="img" aria-label="モデルの動き" data-scene></svg></div>
-        <div class="stage" data-pl style="padding:6px"></div>
         <div class="stage" style="padding:6px"><table class="ctl-tab" data-tab style="width:100%;border-collapse:collapse;font-size:11px;text-align:center"></table></div>
         <div class="lab-big" aria-live="polite" data-big></div><p class="cap" data-cap></p>`;
-      const $ = s => el.querySelector(s), scene = $("[data-scene]"), pl = $("[data-pl]"), tab = $("[data-tab]"), big = $("[data-big]");
+      const $ = s => el.querySelector(s), scene = $("[data-scene]"), tab = $("[data-tab]"), big = $("[data-big]");
       const run = () => {
         const c = 2 * zeta * Math.sqrt(M * K), f = t => t >= T0 ? 1 : 0, r = ctl.rk4((s, t) => [s[1], (f(t) - c * s[1] - K * s[0]) / M], [0, 0], DT, Math.round(T / DT));
         const xs = ctl.col(r, 0), mx = Math.max(...xs.map(Math.abs), 1e-6); sim = { xs, mx, c };
@@ -81,10 +86,15 @@
         const all = mode === "all", x = ctl.at(sim.xs, DT, t) / sim.mx, u = t >= T0 ? 1 : 0;
         if (all) scene.innerHTML = MODELS.map((m, i) => `<g transform="translate(${(i % 2) * 170} ${Math.floor(i / 2) * 98}) scale(.5)">${SCENE[m.id](x, u, false)}</g><text x="${(i % 2) * 170 + 6}" y="${Math.floor(i / 2) * 98 + 12}" class="svg-t" style="font-size:10.5px;font-weight:700" fill="var(--muted)">${m.name}</text>`).join("");
         else scene.innerHTML = SCENE[mode](x, u, true);
-        const colors = ["var(--packet)", "var(--info)", "var(--ok)", "var(--attack)"], ser = all
-          ? MODELS.map((m, i) => ({ dt: DT, y: sim.xs.map(v => v / sim.mx), color: colors[i], w: 4 - i * .8, dash: i ? "6 3" : "", label: m.name }))
-          : [{ dt: DT, y: sim.xs.map(v => v / sim.mx), color: "var(--packet)", label: "出力(最大を 1 とした割合)" }];
-        pl.innerHTML = ctl.plot({ H: 110, x0: 0, x1: T, ymin: 0, ymax: 1.15, series: ser, t, upto: t, hlines: [{ y: 1 / K / sim.mx, label: "最終値 u/k", color: "var(--ok)" }], xlabel: "時間 s", aria: "4つのモデルの応答" });
+        const svg = scene;
+        svg.setAttribute("viewBox", all ? "0 0 340 196" : "0 0 340 284");
+        if (!all) {
+          const f = u, xx = ctl.at(sim.xs, DT, t), vv = (ctl.at(sim.xs, DT, t + DT) - ctl.at(sim.xs, DT, Math.max(0, t - DT))) / (2 * DT), aa = (f - sim.c * vv - K * xx) / M;
+          const rows = FORCES[mode], vals = [f, -K * xx, -sim.c * vv, M * aa], cols = ["var(--attack)", "var(--info)", "var(--ok)", "var(--packet)"], k = 45;
+          let o = `<line x1="0" y1="198" x2="340" y2="198" stroke="var(--line)"/><text x="6" y="212" class="svg-t" style="font-size:10.5px;font-weight:700">いま働いている力(矢印の向きが力の向き)</text><line x1="226" y1="218" x2="226" y2="282" stroke="var(--muted)" stroke-dasharray="3 2"/>`;
+          rows.forEach((lab, i) => { const y = 228 + i * 12 + (i === 3 ? 6 : 0); o += `<text x="6" y="${y + 3}" class="svg-m" style="font-size:9.5px" fill="${cols[i]}">${lab}</text>` + ctl.arrow(226, y, vals[i] * k, cols[i], 4); });
+          scene.innerHTML += o;
+        }
         const hl = all ? row : -1;
         tab.innerHTML = `<tr><th style="padding:3px;text-align:left">役割</th>${MODELS.map((m, i) => `<th style="padding:3px;${(all || m.id === mode) ? "color:var(--packet)" : "color:var(--muted)"}">${m.name}</th>`).join("")}</tr>` +
           ROLES.map((ro, k) => `<tr style="${hl === k ? "background:var(--sunken);outline:2px solid " + ro[1] : ""}"><td style="padding:3px;text-align:left;color:${ro[1]};font-weight:700">${ro[0]}</td>${MODELS.map(m => `<td style="padding:3px;${(all || m.id === mode) ? "" : "opacity:.35"}${hl === k ? ";font-weight:700" : ""}">${m.col[k]}</td>`).join("")}</tr>`).join("");
@@ -100,7 +110,6 @@
       ply = ctl.player($("[data-ply]"), { T, draw });
       run(); eq(); ply.restart();
       ST.wireSeg(el, "mode", v => { mode = v; redo(); });
-      ctl.wireSliders(el, (id, v) => { zeta = v; redo(); });
       return () => ply.stop();
     }
   });

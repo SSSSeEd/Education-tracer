@@ -14,8 +14,8 @@
       el.innerHTML = `${ctl.sliders([{ id: "E", label: "かける電圧 e₁", min: 1, max: 10, step: 1, v: E, unit: "V" }, { id: "R", label: "抵抗 R", min: .5, max: 5, step: .5, v: R }, { id: "L", label: "インダクタンス L", min: .05, max: 1, step: .05, v: L }, { id: "K", label: "モーター定数 K(Kₑ ＝ Kₜ)", min: .2, max: 2, step: .1, v: K }, { id: "J", label: "慣性モーメント J", min: .2, max: 3, step: .2, v: J }, { id: "B", label: "粘性抵抗 B", min: 0, max: 2, step: .1, v: B }])}
         <div data-ply></div>
         <div class="stage" style="padding:4px"><svg viewBox="0 0 340 128" style="width:100%;display:block" role="img" aria-label="モーターの回転と各量" data-scene></svg></div>
-        <div class="stage" data-pi style="padding:6px"></div><div class="stage" data-pw style="padding:6px"></div><p class="cap" data-cap></p>`;
-      const $ = s => el.querySelector(s), scene = $("[data-scene]"), pi = $("[data-pi]"), pw = $("[data-pw]"), cap = $("[data-cap]");
+        <p class="cap" data-cap></p>`;
+      const $ = s => el.querySelector(s), scene = $("[data-scene]"), cap = $("[data-cap]");
       const e1 = t => t >= T0 ? E : 0;
       const run = () => {
         const n = Math.round(T / DT), r = ctl.rk4((s, t) => [(e1(t) - R * s[0] - K * s[1]) / L, (K * s[0] - B * s[1]) / J, s[1]], [0, 0, 0], DT, n);
@@ -30,8 +30,6 @@
         const bx = 196, bw = 100, sv = bw / 2 / Math.max(E, K * sim.wmax, .1), si = bw / 2 / sim.imax, sq = bw / 2 / (K * sim.imax);
         s += ctl.bar(bx, 8, bw, e1(t), sv, "var(--info)", "電圧 e₁", ctl.n(e1(t), 2)) + ctl.bar(bx, 36, bw, K * w, sv, "var(--attack)", "逆起電力 e₂", ctl.n(K * w, 2)) + ctl.bar(bx, 68, bw, i, si, "var(--ok)", "電流 i", ctl.n(i, 2)) + ctl.bar(bx, 96, bw, K * i, sq, "var(--packet)", "トルク K·i", ctl.n(K * i, 2));
         scene.innerHTML = s;
-        pi.innerHTML = ctl.plot({ H: 104, x0: 0, x1: T, series: [{ dt: DT, y: sim.i, color: "var(--ok)", label: "電流 i(t)" }], hlines: [{ y: E / R, label: "E/R(回転前の最大)", color: "var(--muted)" }], t, upto: t, xlabel: "時間 s", aria: "電流" });
-        pw.innerHTML = ctl.plot({ H: 104, x0: 0, x1: T, series: [{ dt: DT, y: sim.w, color: "var(--packet)", label: "角速度 ω(t)" }], hlines: [{ y: K * E / (R * B + K * K), label: "最終値", color: "var(--ok)" }], t, upto: t, xlabel: "時間 s", aria: "角速度" });
       };
       const note = () => { cap.innerHTML = ST.am(`最終的な角速度は ω ＝ K e₁ /(R B ＋ K²) ＝ ${ctl.n(K * E / (R * B + K * K), 2)} rad/s、そのときの電流は i ＝ B ω/K ＝ ${ctl.n(B * K * E / (R * B + K * K) / K, 2)} A。電圧をかけた直後は電流が大きく(最大 E/R)、回り出すと逆起電力のぶんだけ減ります。これが「逆起電力」のはたらきです。B を 0 にすると、負荷がなく逆起電力が電圧に近づくまで回ります。`); };
       const redo = () => { run(); note(); ply.restart(); ST.markLab("motor"); };
