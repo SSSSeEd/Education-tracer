@@ -83,13 +83,13 @@
     if (hi - lo < 1e-9) hi = lo + 1;
     const X = v => pl + (W - pl - pr) * (v - x0) / (x1 - x0), Y = v => pt + (H - pt - pb) * (1 - (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo));
     let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block" role="img" aria-label="${esc(o.aria || "グラフ")}">`;
-    const sy = niceStep((hi - lo) / 4);
-    for (let v = Math.ceil(lo / sy) * sy; v <= hi + 1e-9; v += sy) s += `<line x1="${pl}" x2="${W - pr}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-width="${Math.abs(v) < 1e-9 ? 1.6 : 1}"/><text x="${pl - 4}" y="${(Y(v) + 3).toFixed(1)}" text-anchor="end" class="svg-m" style="font-size:9px">${ctl.n(v, sy < 1 ? 1 : 0)}</text>`;
+    const sy = niceStep((hi - lo) / 4), tk = (v, st) => Math.abs(v) >= 10000 ? v.toExponential(0).replace("e+", "e") : ctl.n(v, st < 1 ? 1 : 0);
+    for (let v = Math.ceil(lo / sy) * sy; v <= hi + 1e-9; v += sy) s += `<line x1="${pl}" x2="${W - pr}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-width="${Math.abs(v) < 1e-9 ? 1.6 : 1}"/><text x="${pl - 4}" y="${(Y(v) + 3).toFixed(1)}" text-anchor="end" class="svg-m" style="font-size:9px">${tk(v, sy)}</text>`;
     const sx = niceStep((x1 - x0) / 5);
     for (let v = Math.ceil(x0 / sx) * sx; v <= x1 + 1e-9; v += sx) s += `<line y1="${pt}" y2="${H - pb}" x1="${X(v).toFixed(1)}" x2="${X(v).toFixed(1)}" stroke="var(--line)" stroke-width=".6"/><text x="${X(v).toFixed(1)}" y="${H - pb + 12}" text-anchor="middle" class="svg-m" style="font-size:9px">${ctl.n(v, sx < 1 ? 1 : 0)}</text>`;
     if (o.xlabel) s += `<text x="${W - pr}" y="${H - 2}" text-anchor="end" class="svg-m" style="font-size:9px">${esc(o.xlabel)}</text>`;
     (o.hlines || []).forEach(h => { s += `<line x1="${pl}" x2="${W - pr}" y1="${Y(h.y).toFixed(1)}" y2="${Y(h.y).toFixed(1)}" stroke="${h.color || "var(--muted)"}" stroke-dasharray="4 3" stroke-width="1.2"/>`; if (h.label) s += `<text x="${W - pr - 2}" y="${(Y(h.y) - 3).toFixed(1)}" text-anchor="end" class="svg-m" style="font-size:9px" fill="${h.color || "var(--muted)"}">${esc(h.label)}</text>`; });
-    (o.vlines || []).forEach(v => { s += `<line y1="${pt}" y2="${H - pb}" x1="${X(v.x).toFixed(1)}" x2="${X(v.x).toFixed(1)}" stroke="${v.color || "var(--muted)"}" stroke-dasharray="4 3" stroke-width="1.2"/>`; if (v.label) s += `<text x="${(X(v.x) + 3).toFixed(1)}" y="${pt + 9}" class="svg-m" style="font-size:9px" fill="${v.color || "var(--muted)"}">${esc(v.label)}</text>`; });
+    (o.vlines || []).filter(v => v.x >= x0 - 1e-9 && v.x <= x1 + 1e-9).forEach(v => { s += `<line y1="${pt}" y2="${H - pb}" x1="${X(v.x).toFixed(1)}" x2="${X(v.x).toFixed(1)}" stroke="${v.color || "var(--muted)"}" stroke-dasharray="4 3" stroke-width="1.2"/>`; if (v.label) s += `<text x="${(X(v.x) + (X(v.x) > W - 60 ? -3 : 3)).toFixed(1)}" y="${pt + 9}" text-anchor="${X(v.x) > W - 60 ? "end" : "start"}" class="svg-m" style="font-size:9px" fill="${v.color || "var(--muted)"}">${esc(v.label)}</text>`; });
     const upto = o.upto == null ? Infinity : o.upto;
     let lx = pl;
     o.series.forEach(se => {
