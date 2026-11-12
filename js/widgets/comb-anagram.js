@@ -22,9 +22,9 @@
   ST.widget("anagram", {
     title: "並べ替え(重複順列):同じ文字があると何通り減るか",
     group: "comb", name: "並べ替え(重複順列)", desc: "BENZENE など。n! を「同じものの並べ替え」で割る", order: 13, tag: "重複順列",
-    formula: "P(n: n₁,n₂,…,nᵣ) ＝ n! ÷ (n₁! × n₂! × … × nᵣ!)",
-    says: "r 種類のものが、それぞれ n₁, n₂, …, nᵣ 個あるときの並べ方の数です(合計 n 個)。",
-    meaning: "全部ちがうものとして並べると n! 通りですが、同じ文字どうしを入れ替えても見た目は変わりません。同じ文字が k 個あれば、見た目が同じ並べ方が k! 通りずつ重なっているので、k! で割ります。",
+    formula: "P(n: $n_{1},n_{2}$,…,$n_{r}$) $= n! \\div$ ($n_{1}! \\times n_{2}! \\times$ … $\\times n_{r}!$)",
+    says: "r 種類のものが、それぞれ $n_{1}, n_{2}$, …, $n_{r}$ 個あるときの並べ方の数です(合計 n 個)。",
+    meaning: "全部ちがうものとして並べると $n!$ 通りですが、同じ文字どうしを入れ替えても見た目は変わりません。同じ文字が k 個あれば、見た目が同じ並べ方が $k!$ 通りずつ重なっているので、$k!$ で割ります。",
     mount(el) {
       let sel = "1", custom = "ABCAB", pos = 0, alive = true, busy = false;
       const word = () => (sel === "4" ? custom : PRESETS[+sel].word);

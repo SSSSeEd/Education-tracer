@@ -8,9 +8,9 @@
     title: "累乗とn乗根:角度が n 倍になる、根は正 n 角形に並ぶ",
     group: "cx", name: "累乗とn乗根", desc: "zⁿ は長さがn乗・角度がn倍。n乗根は円周上に等間隔に並ぶ", order: 3,
     tag: "ド・モアブルの公式",
-    formula: "zⁿ ＝ rⁿ(cos nθ ＋ i sin nθ)",
-    says: "z ＝ r(cos θ ＋ i sin θ) のとき、n 乗すると長さは rⁿ、角度は nθ になります。逆に n 乗根は n 個あり、角度が 2π/n ずつずれて並びます。",
-    meaning: "掛け算が「回転」なので、n 乗は「n 回回転」です。逆に、角度 θ の点の n 乗根は、θ/n から出発して 360°/n ずつ回した n 個の点で、正 n 角形をつくります。",
+    formula: "$z^{n} = r^{n}(\\cos n\\theta + i \\sin n\\theta )$",
+    says: "$z = r(\\cos \\theta + i \\sin \\theta )$ のとき、n 乗すると長さは $r^{n}$、角度は $n\\theta$ になります。逆に n 乗根は n 個あり、角度が $\\frac{2\\pi }{n}$ ずつずれて並びます。",
+    meaning: "掛け算が「回転」なので、n 乗は「n 回回転」です。逆に、角度 $\\theta$ の点の n 乗根は、$\\frac{\\theta }{n}$ から出発して $360^{\\circ}/n$ ずつ回した n 個の点で、正 n 角形をつくります。",
     mount(el) {
       let z = [1, 1], n = 3, mode = "pow";
       el.innerHTML = `<div><p class="lab-label">見方</p>${ST.segHtml("mode", [["pow", "z の累乗 z, z², z³…"], ["root", "z の n 乗根"]], mode)}</div>

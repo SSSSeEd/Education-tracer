@@ -8,9 +8,9 @@
     title: "掛け算は「拡大」と「回転」:長さは掛け算、角度は足し算",
     group: "cx", name: "掛け算は拡大と回転", desc: "z に α を掛けると、|α| 倍に拡大して arg α だけ回転する", order: 2,
     tag: "極形式と積",
-    formula: "|zα| ＝ |z|·|α|　arg(zα) ＝ arg z ＋ arg α",
+    formula: "$|z\\alpha | = |z|\\cdot |\\alpha | \\quad \\arg (z\\alpha ) = \\arg z + \\arg \\alpha$",
     says: "複素数の掛け算は、長さを掛け合わせ、角度(偏角)を足し合わせたものです。割り算は長さを割り、角度を引きます。",
-    meaning: "z に α を掛けることは「原点のまわりに arg α だけ回して、|α| 倍に伸ばす」動きです。i を掛けると 90° 回転、−1 を掛けると 180° 回転(点対称)になります。",
+    meaning: "z に $\\alpha$ を掛けることは「原点のまわりに $\\arg \\alpha$ だけ回して、$|\\alpha |$ 倍に伸ばす」動きです。i を掛けると 90° 回転、−1 を掛けると 180° 回転(点対称)になります。",
     mount(el) {
       let z = [2, 1], a = [1, 1], op = "mul", alive = true, busy = false, t = 1;
       el.innerHTML = `<div><p class="lab-label">計算</p>${ST.segHtml("op", [["mul", "z × α"], ["div", "z ÷ α"]], op)}</div>

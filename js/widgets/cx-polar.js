@@ -14,9 +14,9 @@
     title: "極形式:点を動かすと a＋bi と r(cos θ＋i sin θ) が同時に変わる",
     group: "cx", name: "極形式 (r と θ)", desc: "点を動かして、a＋bi と r(cosθ＋i sinθ) が同時に更新される様子を見る", order: 1.5,
     tag: "極形式",
-    formula: "a ＋ bi ＝ r(cos θ ＋ i sin θ)　a ＝ r cos θ、b ＝ r sin θ",
-    says: "同じ点を、横と縦の位置 (a, b) で書くか、原点からの距離 r と角度 θ で書くかの違いです。どちらも同じ複素数です。",
-    meaning: "r は矢印の長さ(＝ |z|)、θ は正の実軸から反時計回りに測った矢印の角度です。a と b は、矢印を実軸・虚軸に落とした「影」の長さで、r cos θ、r sin θ にあたります。",
+    formula: "$a + bi = r(\\cos \\theta + i \\sin \\theta ) \\quad a = r \\cos \\theta$、$b = r \\sin \\theta$",
+    says: "同じ点を、横と縦の位置 (a, b) で書くか、原点からの距離 r と角度 $\\theta$ で書くかの違いです。どちらも同じ複素数です。",
+    meaning: "r は矢印の長さ$(= |z|)$、$\\theta$ は正の実軸から反時計回りに測った矢印の角度です。a と b は、矢印を実軸・虚軸に落とした「影」の長さで、$r \\cos \\theta$、$r \\sin \\theta$ にあたります。",
     mount(el) {
       let z = [1, 1], snap = .5, unit = "deg";
       el.innerHTML = `<div class="stage"><svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:420px;display:block;margin:auto" role="img" aria-label="極形式の図"></svg></div>

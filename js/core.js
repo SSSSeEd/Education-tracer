@@ -33,7 +33,7 @@ window.ST = window.ST || {};
   };
 
   /* "What is this?" box shown before a property or a lab: tag, name, formula, what it says, what it counts. */
-  ST.propHtml = p => `<div class="prop-box"><div class="prop-h"><span class="chip">${ST.esc(p.tag || "性質")}</span><b>${ST.esc(p.name)}</b></div>
+  ST.propHtml = p => `<div class="prop-box"><div class="prop-h"><span class="chip">${ST.esc(p.tag || "性質")}</span><b>${ST.md(p.name)}</b></div>
     <div class="prop-f" role="math">${ST.md(p.formula, true)}</div>
     <dl>${p.says ? `<dt>表していること</dt><dd>${ST.md(p.says)}</dd>` : ""}${p.meaning ? `<dt>意味(何を数えている?)</dt><dd>${ST.md(p.meaning)}</dd>` : ""}</dl></div>`;
 
@@ -148,6 +148,7 @@ window.ST = window.ST || {};
     try {
       const cleanup = def.mount(body, opts || {});
       if (typeof cleanup === "function") live.push(cleanup);
+      if (def.group !== "ctl" && ST.watchTree) live.push(ST.watchTree(body));   // math written as plain Unicode in captions is rendered with KaTeX
     } catch (e) { body.innerHTML = `<p class="empty">表示できませんでした: ${ST.esc(e.message)}</p>`; console.error(e); }
   };
   ST.mountAll = root => ST.$$("[data-widget]", root).forEach(h => {
