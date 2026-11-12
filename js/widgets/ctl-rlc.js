@@ -21,8 +21,8 @@
         <div data-sl></div><div data-ply></div>
         <div class="stage" style="padding:4px"><svg viewBox="0 0 340 150" style="width:100%;display:block" role="img" aria-label="回路と電流の流れ" data-ckt></svg></div>
         <div class="hexbox" data-eq style="font-size:13px"></div>
-        <div class="stage" data-pv style="padding:6px"></div><div class="stage" data-pi style="padding:6px"></div><p class="cap" data-cap></p>`;
-      const $ = s => el.querySelector(s), ckt = $("[data-ckt]"), eq = $("[data-eq]"), pv = $("[data-pv]"), pi = $("[data-pi]"), cap = $("[data-cap]");
+        <p class="cap" data-cap></p>`;
+      const $ = s => el.querySelector(s), ckt = $("[data-ckt]"), eq = $("[data-eq]"), cap = $("[data-cap]");
       const ei = t => t < T0 ? 0 : inp === "step" ? E : ((t - T0) % 6) < 3 ? E : 0;
       const run = () => {
         const n = Math.round(T / DT);
@@ -62,12 +62,10 @@
         }
         s += `<text x="8" y="144" class="svg-m" style="font-size:10px">電流 i ＝ ${ctl.n(g(sim.ii), 3)} A(点の速さが電流の大きさ)　入力 eᵢ ＝ ${ctl.n(ei(t), 1)} V</text>`;
         ckt.innerHTML = s;
-        pv.innerHTML = ctl.plot({ H: 118, x0: 0, x1: T, series: [{ dt: DT, y: sim.ei, color: "var(--info)", label: "入力 eᵢ", dash: "5 3", w: 1.6 }, { dt: DT, y: sim.eo, color: "var(--packet)", label: "出力 eₒ" }], t, upto: t, xlabel: "時間 s", aria: "入力電圧と出力電圧" });
-        pi.innerHTML = ctl.plot({ H: 84, x0: 0, x1: T, series: [{ dt: DT, y: sim.ii, color: "var(--ok)", label: "電流 i" }], t, upto: t, xlabel: "時間 s", aria: "電流" });
       };
       const note = () => {
         eq.innerHTML = ST.am(`入出力の関係式<br>${MODES[mode].eq}`);
-        if (mode === "rlc") { const z = v.R / 2 * Math.sqrt(v.C / v.L); cap.innerHTML = ST.am(`ωₙ ＝ 1/√(LC) ＝ ${ctl.n(1 / Math.sqrt(v.L * v.C), 2)} rad/s、ζ ＝ (R/2)√(C/L) ＝ ${ctl.n(z, 2)}。` + (z < 1 ? "ζ が小さいので、eₒ は行き過ぎて揺れます(コイルとコンデンサの間で電気がゆすり合う)。R を大きくすると揺れが減ります。" : "ζ が 1 以上なので、揺れずにゆっくり上がります。")); }
+        if (mode === "rlc") cap.innerHTML = ST.am("電源の電圧 eᵢ は、抵抗の電圧降下 R i、コイルの電圧降下 L di/dt、コンデンサの電圧 eₒ の3つに配られます(キルヒホッフの第2法則)。");
         else if (mode === "low") cap.innerHTML = "ローパスフィルタ:ゆっくりした変化は通し、すばやい変化はなまらせます。最終値は eᵢ·R₂/(R₁＋R₂)。矩形波にして、角がなまる様子を見てください。";
         else cap.innerHTML = ST.am(`ハイパスフィルタ(位相進み回路):つないだ瞬間はコンデンサが素通りなので eₒ ＝ eᵢ(すばやい変化は通す)。やがてコンデンサに電気がたまると、R₁ と R₂ で分ける形になり、eₒ は eᵢ·R₂/(R₁＋R₂) ＝ ${ctl.n(E * v.R2 / (v.R1 + v.R2), 2)} V まで下がります。矩形波にすると、立ち上がりの山が見えます。`);
       };

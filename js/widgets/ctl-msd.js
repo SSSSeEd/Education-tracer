@@ -21,9 +21,8 @@
         <div class="stage" style="padding:4px"><svg viewBox="0 0 340 176" style="width:100%;display:block" role="img" aria-label="台車・ばね・ダンパの動き" data-scene></svg></div>
         <div class="hexbox" data-eq style="font-size:13px"></div>
         <div class="stage" style="padding:4px"><svg viewBox="0 0 340 92" style="width:100%;display:block" role="img" aria-label="力のつり合い" data-bars></svg></div>
-        <div class="stage" data-px style="padding:6px"></div><div class="stage" data-pf style="padding:6px"></div>
         <p class="cap" data-cap></p>`;
-      const $ = s => el.querySelector(s), scene = $("[data-scene]"), bars = $("[data-bars]"), eq = $("[data-eq]"), px = $("[data-px]"), pf = $("[data-pf]"), cap = $("[data-cap]");
+      const $ = s => el.querySelector(s), scene = $("[data-scene]"), bars = $("[data-bars]"), eq = $("[data-eq]"), cap = $("[data-cap]");
       const fIn = t => inp === "step" ? (t >= T0 ? A : 0) : inp === "pulse" ? (t >= T0 && t < T0 + .5 ? A : 0) : (t >= T0 ? A * Math.sin(2 * (t - T0)) : 0);
       const xiF = t => { const u = (t - T0) / .4; return inp === "step" ? A * sm(u) : inp === "pulse" ? A * (sm(u) - sm((t - T0 - .5) / .4)) : (t >= T0 ? A * Math.sin(2 * (t - T0)) : 0); };
       const viF = t => { const u = (t - T0) / .4; return inp === "step" ? A * dsm(u) / .4 : inp === "pulse" ? A * (dsm(u) - dsm((t - T0 - .5) / .4)) / .4 : (t >= T0 ? 2 * A * Math.cos(2 * (t - T0)) : 0); };
@@ -49,6 +48,13 @@
         s += `<line x1="${base}" y1="${cy + ch + 16}" x2="${base}" y2="${cy + ch + 36}" stroke="var(--muted)" stroke-dasharray="3 2"/><text x="${base}" y="${cy + ch + 47}" text-anchor="middle" class="svg-m" style="font-size:9.5px">x ＝ 0</text>`;
         s += `<line x1="${L.toFixed(1)}" y1="${cy + ch + 30}" x2="${base}" y2="${cy + ch + 30}" stroke="var(--packet)" stroke-width="1.5"/><text x="${((L + base) / 2).toFixed(1)}" y="${cy + ch + 27}" text-anchor="middle" class="svg-t" style="font-size:10.5px;font-weight:700" fill="var(--packet)">x ＝ ${ctl.n(x, 2)}</text>`;
         if (!w) { s += ctl.arrow(L + cw + 3, cy + ch / 2, A ? u / A * 60 : 0, "var(--attack)", 4); s += `<text x="${(L + cw + 6).toFixed(1)}" y="${cy + ch / 2 - 10}" class="svg-t" style="font-size:10.5px;font-weight:700" fill="var(--attack)">f ＝ ${ctl.n(u, 1)}</text>`; }
+        {
+          const k = 50 / sim.bm, ay = [cy - 16, cy - 32], fs = w ? [["ばね K(xᵢ−x)", K * (u - x), "var(--info)"], ["ダンパ C(vᵢ−v)", C * (ctl.at(sim.us.map((_, i) => viF(i * DT)), DT, t) - v), "var(--ok)"]] : [["ばね −K x", -K * x, "var(--info)"], ["ダンパ −C v", -C * v, "var(--ok)"]];
+          fs.forEach(([lab, F, col], i) => {
+            const y = ay[i], d = F * k;
+            s += ctl.arrow(L + cw / 2, y, d, col, 4) + `<circle cx="${(L + cw / 2).toFixed(1)}" cy="${y}" r="2.5" fill="${col}"/><text x="6" y="${y + 3}" text-anchor="start" class="svg-m" style="font-size:9.5px" fill="${col}">${lab} = ${ctl.n(F, 1)}</text>`;
+          });
+        }
         scene.innerHTML = s;
         const Ma = M * a, Cv = C * v, Kx = w ? K * (u - x) : K * x, bw = 190, bx = 70, k = bw / 2 / sim.bm;
         if (w) {
@@ -59,13 +65,10 @@
           bars.innerHTML = ctl.bar(bx, 4, bw, Ma, k, "var(--packet)", "慣性 M·a", ctl.n(Ma, 2)) + ctl.bar(bx, 24, bw, Cv, k, "var(--ok)", "粘性 C·v", ctl.n(Cv, 2)) + ctl.bar(bx, 44, bw, Kx, k, "var(--info)", "ばね K·x", ctl.n(Kx, 2)) + ctl.bar(bx, 70, bw, u, k, "var(--attack)", "入力 f", ctl.n(u, 2));
           eq.innerHTML = ST.am(`M a ＋ C v ＋ K x ＝ f<br>${ctl.n(Ma, 2)} ＋ ${ctl.n(Cv, 2)} ＋ ${ctl.n(Kx, 2)} ＝ ${ctl.n(Ma + Cv + Kx, 2)}(f ＝ ${ctl.n(u, 2)})`);
         }
-        const hl = !w && inp === "step" && A ? [{ y: A / K, label: "最終値 f/K ＝ " + ctl.n(A / K, 2), color: "var(--ok)" }] : [];
-        px.innerHTML = ctl.plot({ H: 120, x0: 0, x1: T, series: [{ dt: DT, y: sim.xs, color: "var(--packet)", label: "変位 x(t)" }].concat(w ? [{ dt: DT, y: sim.us, color: "var(--info)", label: "入力 xᵢ(t)", dash: "5 3", w: 1.5 }] : []), t, upto: t, hlines: hl, xlabel: "時間 s", aria: "変位の時間変化" });
-        pf.innerHTML = w ? "" : ctl.plot({ H: 84, x0: 0, x1: T, series: [{ dt: DT, y: sim.us, color: "var(--attack)", label: "加えた力 f(t)" }], t, upto: t, xlabel: "時間 s", aria: "加えた力" });
       };
       const note = () => {
         const z = C / (2 * Math.sqrt(M * K)), wn = Math.sqrt(K / M);
-        cap.innerHTML = ST.am(`固有角周波数 ωₙ ＝ √(K/M) ＝ ${ctl.n(wn, 2)} rad/s、減衰係数 ζ ＝ C/(2√(MK)) ＝ ${ctl.n(z, 2)}。` + (z < 1 ? "ζ が 1 より小さいので、行き過ぎて揺れながら落ち着きます。C を大きくすると揺れが減ります。" : "ζ が 1 以上なので、揺れずにゆっくり落ち着きます。C を小さくすると揺れ始めます。") + " 時間のスライダーで、途中の様子を戻して見られます。");
+        cap.innerHTML = ST.am(mode === "wall" ? "左端を動かすと、ばねとダンパが台車を引きます。台車が受ける力は、左端と台車の「差」(相対変位・相対速度)で決まります。" : "矢印は台車が受けている力です。ばね −K x は変位と逆向き、ダンパ −C dx/dt は速度と逆向き、外力 f は加えた向きです。この合計が M d²x/dt² です。");
       };
       const redo = () => { run(); note(); ply.setT(T); ply.restart(); ST.markLab("msd"); };
       ply = ctl.player($("[data-ply]"), { T, draw: t => sim && draw(t) });
