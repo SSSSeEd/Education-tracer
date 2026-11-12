@@ -15,9 +15,8 @@
         <div data-ply></div>
         <div class="stage" style="padding:4px"><svg viewBox="0 0 340 172" style="width:100%;display:block" role="img" aria-label="タンクの水位" data-scene></svg></div>
         <div class="hexbox" data-eq style="font-size:13px"></div>
-        <div class="stage" data-ph style="padding:6px"></div>
         <div class="hexbox" data-an style="font-size:12.5px"></div><p class="cap" data-cap></p>`;
-      const $ = s => el.querySelector(s), scene = $("[data-scene]"), eq = $("[data-eq]"), ph = $("[data-ph]"), an = $("[data-an]"), cap = $("[data-cap]");
+      const $ = s => el.querySelector(s), scene = $("[data-scene]"), eq = $("[data-eq]"), an = $("[data-an]"), cap = $("[data-cap]");
       const qi = t => t >= T0 ? Q : 0;
       const run = () => {
         const n = Math.round(T / DT), r = ctl.rk4((s, t) => [(qi(t) - s[0] / R) / A], [0], DT, n);
@@ -39,13 +38,12 @@
         const dh = (q - h / R) / A;
         eq.innerHTML = ST.am(`A·dh/dt ＋ h/R ＝ qᵢ<br>${A}×${ctl.n(dh, 3)} ＋ ${ctl.n(h / R, 3)} ＝ ${ctl.n(q, 2)}　(dh/dt ＝ ${ctl.n(dh, 3)})`);
         const hf = R * Q, tau = A * R;
-        ph.innerHTML = ctl.plot({ H: 126, x0: 0, x1: T, series: [{ dt: DT, y: sim.h, color: "var(--info)", label: "水位 h(t)(RC回路なら eₒ(t))" }], hlines: [{ y: hf, label: "最終値 R·qᵢ ＝ " + ctl.n(hf, 2), color: "var(--ok)" }, { y: hf * .632, label: "63.2%", color: "var(--muted)" }], vlines: [{ x: T0 + tau, label: "t＝τ", color: "var(--packet)" }], t, upto: t, xlabel: "時間 s", aria: "水位の時間変化" });
         void qout;
       };
       const note = () => {
         const tau = A * R;
         an.innerHTML = ST.am(`<b>アナログ(類似性)</b><br>水位 h ↔ 電圧 eₒ　流量 q ↔ 電流 i<br>出口の抵抗 R ↔ 抵抗 R　断面積 A ↔ 容量 C<br>RC回路 C·deₒ/dt ＋ eₒ/R ＝ eᵢ/R と同じ形(qᵢ ↔ eᵢ/R)`);
-        cap.innerHTML = ST.am(`時定数 τ ＝ A·R ＝ ${ctl.n(tau, 2)} 秒。流入を変えてから τ 秒後に、水位は最終値の約 63% まで届きます(オレンジの線)。A や R を大きくすると、追いつくのが遅くなります。`);
+        cap.innerHTML = "入ってくる水 qᵢ と、出ていく水 h/R の差が、水位 h を変えます(A dh/dt)。水位が上がるほど出る量が増え、qᵢ とつり合うと水位は止まります。";
       };
       const redo = () => { run(); note(); ply.restart(); ST.markLab("tank"); };
       ply = ctl.player($("[data-ply]"), { T, draw: t => sim && draw(t), speed: 1.4 });
