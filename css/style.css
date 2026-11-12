@@ -500,3 +500,11 @@ nav.tabs a[aria-current="page"] svg{stroke-width:2.2}
 /* 制御工学ラボ */
 .ctl-sl{display:grid;gap:6px}.ctl-s{display:grid;gap:2px}.ctl-s .lab-label{margin:0}
 .ctl-ply{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ctl-ply .mono{font-family:var(--f-mono);font-size:13px;margin-left:auto}
+
+/* LaTeX (KaTeX, bundled in vendor/katex) */
+.tex .katex{font-size:1.08em;text-indent:0}
+.prop-f .tex .katex{font-size:1.12em}
+.prop-f:has(.tex){white-space:normal;font-family:inherit;font-weight:500}
+.q-opts button .tex .katex{font-size:1.05em}
+.tex{overflow-wrap:normal}
+.hexbox .tex .katex{font-size:1.05em}

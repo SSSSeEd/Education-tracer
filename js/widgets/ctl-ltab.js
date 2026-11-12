@@ -23,7 +23,7 @@
   ST.widget("ltab", {
     title: "ラプラス変換の表を引く:該当行へ線がのび、係数をととのえる",
     group: "ctl", name: "ラプラス変換の表を引く", desc: "F(s) を表の行に合わせる流れ(線がのびる→係数をととのえる→答え)", order: 12, tag: "逆ラプラス変換",
-    formula: "F(s) ＝ k × (表の F)　⇒　f(t) ＝ k × (表の f)",
+    formula: "$F(s) = k \\times$(表の F)　⇒　$f(t) = k \\times$(表の f)",
     says: "逆変換は表を逆に引きます。F(s) の形に合う行を見つけ、係数(定数倍)を表の形にそろえます。定数 k は、変換しても逆変換しても、そのまま前に出ます。",
     meaning: "「分母の形で行を決める → 分子や分母の係数を表の形にそろえる(定数倍を前に出す)」の2段です。表に合わない形は、部分分数に分ければ、各項が表の行に合います。",
     mount(el) {
@@ -46,13 +46,13 @@
         s += `<text x="8" y="188" class="svg-m" style="font-size:10px">${p >= 1 ? "② 該当する行が決まりました" : t < 1 ? "まず F(s) を表と見比べます" : "② 表の行を探しています…"}</text>`;
         sv.innerHTML = s;
         const n = ex.steps.length, shown = clamp(Math.floor((t - 2.4) / 1.1) + 1, 0, n);
-        st.innerHTML = ex.steps.map((x, i) => `<span style="${i < shown ? "" : "opacity:.18"}">③${i + 1}. ${x}</span>`).join("<br>");
+        st.innerHTML = ST.am(ex.steps.map((x, i) => `<span style="${i < shown ? "" : "opacity:.18"}">③${i + 1}. ${x}</span>`).join("<br>"));
         const done = t >= 4.6;
-        big.innerHTML = done ? `<b>f(t) ＝ ${ex.ans}</b><span>表の行に合わせて逆変換しました</span>` : `<b>${shown ? "係数をととのえ中…" : "行を探し中…"}</b><span>▶ で最初から動かせます</span>`;
+        big.innerHTML = ST.am(done ? `<b>f(t) ＝ ${ex.ans}</b><span>表の行に合わせて逆変換しました</span>` : `<b>${shown ? "係数をととのえ中…" : "行を探し中…"}</b><span>▶ で最初から動かせます</span>`);
       };
       const check = () => {
         const ex = EX[key], ln = ctl.laplaceNum(ex.f, 2), Fv = ex.Fv(2);
-        cap.innerHTML = `確かめ: 答えの f(t) を ∫f(t)e^(−st)dt で s＝2 として数値計算すると ${ctl.n(ln, 4)}、F(2) ＝ ${ctl.n(Fv, 4)}。${Math.abs(ln - Fv) < 1e-3 ? "一致しています。" : "ずれています。"}`;
+        cap.innerHTML = ST.am(`確かめ: 答えの f(t) を ∫f(t)e^(−st)dt で s＝2 として数値計算すると ${ctl.n(ln, 4)}、F(2) ＝ ${ctl.n(Fv, 4)}。${Math.abs(ln - Fv) < 1e-3 ? "一致しています。" : "ずれています。"}`);
       };
       ply = ctl.player($("[data-ply]"), { T, draw });
       check(); ply.restart();

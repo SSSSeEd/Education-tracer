@@ -17,18 +17,24 @@ window.ST = window.ST || {};
   ST.shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   ST.uid = (() => { let n = 0; return p => (p || "u") + (++n); })();
 
-  /* Lightweight inline markup for content strings: **bold**, `code`, [[term-id]] or [[term-id|label]] links. */
-  ST.md = s => ST.esc(s)
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g, (m, id, label) => {
-      const t = ST.TERM && ST.TERM[id];
-      return `<a href="#term-${id}">${label || (t ? ST.esc(t.name) : id)}</a>`;
-    });
+  /* Lightweight inline markup for content strings: **bold**, `code`, [[term-id]] or [[term-id|label]] links, and $LaTeX$ (rendered by KaTeX; see js/tex.js).
+     With display = true, the math is shown at full size (used for the formula line of a property box). */
+  ST.md = (s, display) => {
+    const maths = [];
+    s = String(s == null ? "" : s).replace(/\$([^$\n]+)\$/g, (m, t) => "\uE000" + (maths.push(t) - 1) + "\uE001");
+    return ST.esc(s)
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g, (m, id, label) => {
+        const t = ST.TERM && ST.TERM[id];
+        return `<a href="#term-${id}">${label || (t ? ST.esc(t.name) : id)}</a>`;
+      })
+      .replace(/\uE000(\d+)\uE001/g, (m, i) => ST.tex ? ST.tex(maths[+i], display) : ST.esc(maths[+i]));
+  };
 
   /* "What is this?" box shown before a property or a lab: tag, name, formula, what it says, what it counts. */
   ST.propHtml = p => `<div class="prop-box"><div class="prop-h"><span class="chip">${ST.esc(p.tag || "性質")}</span><b>${ST.esc(p.name)}</b></div>
-    <div class="prop-f" role="math">${ST.esc(p.formula)}</div>
+    <div class="prop-f" role="math">${ST.md(p.formula, true)}</div>
     <dl>${p.says ? `<dt>表していること</dt><dd>${ST.md(p.says)}</dd>` : ""}${p.meaning ? `<dt>意味(何を数えている?)</dt><dd>${ST.md(p.meaning)}</dd>` : ""}</dl></div>`;
 
   /* ---------- Sources ---------- */

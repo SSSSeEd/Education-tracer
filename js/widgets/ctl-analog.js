@@ -30,7 +30,7 @@
       s += ctl.flow([[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]], xn * 7, "var(--packet)", 18);
       s += sym("V", x0, ym, true, big ? (un ? "電圧 e" : "") : "") + sym("L", xm, y0, false, big ? "L" : "") + sym("C", x1, ym, true, big ? "C" : "") + sym("R", xm, y1, false, big ? "R" : "");
       s += `<rect x="304" y="${(150 - 56).toFixed(1)}" width="10" height="56" rx="2" fill="var(--sunken)"/><rect x="304" y="${(150 - 56 * xn).toFixed(1)}" width="10" height="${(56 * xn).toFixed(1)}" rx="2" fill="var(--info)"/>`;
-      if (big) s += `<text x="309" y="168" text-anchor="middle" class="svg-t" style="font-size:10.5px;font-weight:700" fill="var(--info)">電荷 q</text><text x="170" y="186" text-anchor="middle" class="svg-m" style="font-size:9.5px">電流 i ＝ q′(点の速さ)</text>`;
+      if (big) s += `<text x="309" y="168" text-anchor="middle" class="svg-t" style="font-size:10.5px;font-weight:700" fill="var(--info)">電荷 q</text><text x="170" y="186" text-anchor="middle" class="svg-m" style="font-size:9.5px">電流 i ＝ dq/dt(点の速さ)</text>`;
       return s;
     },
     rot(xn, un, big) {
@@ -59,7 +59,7 @@
   ST.widget("analog", {
     title: "4つのモデル:同じ形の式、同じ動き",
     group: "ctl", name: "4つのモデルの対応表", desc: "機械・電気・回転・水位が同じ形の式になる様子と、対応表を順に光らせるアニメーション", order: 14, tag: "アナログ",
-    formula: "m x″ ＋ c x′ ＋ k x ＝ u　(質量相当 m、摩擦相当 c、復元相当 k、入力 u、出力 x)",
+    formula: "$m \\frac{d^{2}x}{dt^{2}} + c \\frac{dx}{dt} + k x = u \\quad$(質量相当 m、摩擦相当 c、復元相当 k、入力 u、出力 x)",
     says: "どの分野でも、立て方は同じです。①基準(出力にする量)を決める ②動きにくさ(慣性)・摩擦・復元の3つの力を書く ③それらの和が入力、とする。分野が変わるのは、量の名前と単位だけです。",
     meaning: "機械の質量 M ↔ コイル L ↔ 慣性モーメント J ↔ 水の質量、のように1対1で対応します。ζ を変えると、4つの動きがそろって揺れたり揺れなくなったりします。「4つ重ねる」では、4本の曲線が完全に重なります。",
     mount(el) {
@@ -88,12 +88,12 @@
         const hl = all ? row : -1;
         tab.innerHTML = `<tr><th style="padding:3px;text-align:left">役割</th>${MODELS.map((m, i) => `<th style="padding:3px;${(all || m.id === mode) ? "color:var(--packet)" : "color:var(--muted)"}">${m.name}</th>`).join("")}</tr>` +
           ROLES.map((ro, k) => `<tr style="${hl === k ? "background:var(--sunken);outline:2px solid " + ro[1] : ""}"><td style="padding:3px;text-align:left;color:${ro[1]};font-weight:700">${ro[0]}</td>${MODELS.map(m => `<td style="padding:3px;${(all || m.id === mode) ? "" : "opacity:.35"}${hl === k ? ";font-weight:700" : ""}">${m.col[k]}</td>`).join("")}</tr>`).join("");
-        big.innerHTML = all ? `<b>${hl >= 0 ? ROLES[hl][0] + "の行" : ""}</b><span>${hl >= 0 ? "4つの分野で、同じ役割の量が並びます" : ""}</span>` : `<b>${MODELS.find(m => m.id === mode).name}: ${MODELS.find(m => m.id === mode).eq}</b><span>${n(sim.xs[Math.round(t / DT)] || 0, 3)} ${MODELS.find(m => m.id === mode).unit}(出力の現在値、入力 1)</span>`;
+        big.innerHTML = ST.am(all ? `<b>${hl >= 0 ? ROLES[hl][0] + "の行" : ""}</b><span>${hl >= 0 ? "4つの分野で、同じ役割の量が並びます" : ""}</span>` : `<b>${MODELS.find(m => m.id === mode).name}: ${MODELS.find(m => m.id === mode).eq}</b><span>${n(sim.xs[Math.round(t / DT)] || 0, 3)} ${MODELS.find(m => m.id === mode).unit}(出力の現在値、入力 1)</span>`);
       };
       const draw = t => { if (sim) render(t, mode === "all" ? Math.min(4, Math.floor(t / 2)) : -1); };
       const eq = () => {
         const w = Math.sqrt(K / M);
-        $("[data-eq]").innerHTML = (mode === "all" ? MODELS.map(m => `${m.name}: ${m.eq}`).join("<br>") : MODELS.find(m => m.id === mode).eq) + `<br>どれも m＝${M}、k＝${K}、c＝${n(2 * zeta * Math.sqrt(M * K), 2)} に相当。ωₙ ＝ √(k/m) ＝ ${n(w, 2)} rad/s、ζ ＝ ${n(zeta, 1)}`;
+        $("[data-eq]").innerHTML = ST.am((mode === "all" ? MODELS.map(m => `${m.name}: ${m.eq}`).join("<br>") : MODELS.find(m => m.id === mode).eq) + `<br>どれも m＝${M}、k＝${K}、c＝${n(2 * zeta * Math.sqrt(M * K), 2)} に相当。ωₙ ＝ √(k/m) ＝ ${n(w, 2)} rad/s、ζ ＝ ${n(zeta, 1)}`);
         $("[data-cap]").innerHTML = mode === "water" ? "U字管は、水位系を2次の式で扱う発展のモデルです。授業の1タンク(水位系)は慣性を無視した1次の式で、RC回路と同じ形でした。ρ は水の密度、A は管の断面積、L は水の柱の長さ、g は重力加速度です。" : mode === "all" ? "時間がたつと、表の行が上から順に光ります。同じ役割の量が、どの分野でも同じ位置に並びます。" : "▶ で動かします。時間のスライダーで、途中の様子を見られます。";
       };
       const redo = () => { run(); eq(); ply.restart(); ST.markLab("analog"); };

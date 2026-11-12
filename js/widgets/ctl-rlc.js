@@ -11,8 +11,8 @@
   ST.widget("rlc", {
     title: "電気回路:電圧をかけて、電流と出力電圧を見る",
     group: "ctl", name: "RLC・フィルタ回路", desc: "電圧 eᵢ をかけると、電流(流れる点)と出力電圧 eₒ がどう動くか", order: 3, tag: "キルヒホッフの法則",
-    formula: "eᵢ − eₒ ＝ R i ＋ L di/dt　　eₒ ＝ (1/C) ∫ i dt",
-    says: "第1法則は「接続点に入る電流の合計 ＝ 出る電流の合計」、第2法則は「閉回路を1周すると、電源電圧の合計 ＝ 各要素の電圧降下の合計」です。抵抗は e ＝ R i、コイルは e ＝ L di/dt、コンデンサは e ＝ (1/C)∫ i dt。",
+    formula: "$e_{i} - e_{o} = R i + L \\frac{di}{dt} \\quad e_{o} = (\\frac{1}{C}) \\int i dt$",
+    says: "第1法則は「接続点に入る電流の合計 ＝ 出る電流の合計」、第2法則は「閉回路を1周すると、電源電圧の合計 ＝ 各要素の電圧降下の合計」です。抵抗は $e = R i$、コイルは $e = L \\frac{di}{dt}$、コンデンサは $e = (\\frac{1}{C})\\int i dt$。",
     meaning: "回路の入出力関係式は、電流 i を文字で置いて電圧降下を足し合わせ、i を消して作ります。下の図では、流れている点の速さが電流の大きさ。コンデンサに電気がたまるにつれて、出力電圧が上がり、電流は減っていきます。",
     mount(el, opts) {
       let mode = MODES[opts && opts.mode] ? opts.mode : "rlc", E = 1, inp = "step", v = { R: 1, L: 1, C: 1, R1: 2, R2: 2 }, sim = null, ply = null;
@@ -66,10 +66,10 @@
         pi.innerHTML = ctl.plot({ H: 84, x0: 0, x1: T, series: [{ dt: DT, y: sim.ii, color: "var(--ok)", label: "電流 i" }], t, upto: t, xlabel: "時間 s", aria: "電流" });
       };
       const note = () => {
-        eq.innerHTML = `入出力の関係式<br>${MODES[mode].eq}`;
-        if (mode === "rlc") { const z = v.R / 2 * Math.sqrt(v.C / v.L); cap.innerHTML = `ωₙ ＝ 1/√(LC) ＝ ${ctl.n(1 / Math.sqrt(v.L * v.C), 2)} rad/s、ζ ＝ (R/2)√(C/L) ＝ ${ctl.n(z, 2)}。` + (z < 1 ? "ζ が小さいので、eₒ は行き過ぎて揺れます(コイルとコンデンサの間で電気がゆすり合う)。R を大きくすると揺れが減ります。" : "ζ が 1 以上なので、揺れずにゆっくり上がります。"); }
+        eq.innerHTML = ST.am(`入出力の関係式<br>${MODES[mode].eq}`);
+        if (mode === "rlc") { const z = v.R / 2 * Math.sqrt(v.C / v.L); cap.innerHTML = ST.am(`ωₙ ＝ 1/√(LC) ＝ ${ctl.n(1 / Math.sqrt(v.L * v.C), 2)} rad/s、ζ ＝ (R/2)√(C/L) ＝ ${ctl.n(z, 2)}。` + (z < 1 ? "ζ が小さいので、eₒ は行き過ぎて揺れます(コイルとコンデンサの間で電気がゆすり合う)。R を大きくすると揺れが減ります。" : "ζ が 1 以上なので、揺れずにゆっくり上がります。")); }
         else if (mode === "low") cap.innerHTML = "ローパスフィルタ:ゆっくりした変化は通し、すばやい変化はなまらせます。最終値は eᵢ·R₂/(R₁＋R₂)。矩形波にして、角がなまる様子を見てください。";
-        else cap.innerHTML = `ハイパスフィルタ(位相進み回路):つないだ瞬間はコンデンサが素通りなので eₒ ＝ eᵢ(すばやい変化は通す)。やがてコンデンサに電気がたまると、R₁ と R₂ で分ける形になり、eₒ は eᵢ·R₂/(R₁＋R₂) ＝ ${ctl.n(E * v.R2 / (v.R1 + v.R2), 2)} V まで下がります。矩形波にすると、立ち上がりの山が見えます。`;
+        else cap.innerHTML = ST.am(`ハイパスフィルタ(位相進み回路):つないだ瞬間はコンデンサが素通りなので eₒ ＝ eᵢ(すばやい変化は通す)。やがてコンデンサに電気がたまると、R₁ と R₂ で分ける形になり、eₒ は eᵢ·R₂/(R₁＋R₂) ＝ ${ctl.n(E * v.R2 / (v.R1 + v.R2), 2)} V まで下がります。矩形波にすると、立ち上がりの山が見えます。`);
       };
       const controls = () => {
         $("[data-sl]").innerHTML = ctl.sliders([{ id: "E", label: "入力電圧 eᵢ の大きさ", min: .5, max: 5, step: .5, v: E, unit: "V" }].concat(MODES[mode].p.map(([id, label, min, max, step]) => ({ id, label, min, max, step, v: v[id] }))));

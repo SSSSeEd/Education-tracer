@@ -96,5 +96,20 @@ const SCAN_RULES = [
   });
 })(root);
 
+/* LaTeX in content strings ($...$) must parse with the bundled KaTeX; a typo would otherwise show as raw code in the app. */
+(function checkTex() {
+  let katex; try { katex = require(path.join(root, "vendor/katex/katex.min.js")); } catch (e) { return bad("vendor/katex/katex.min.js を読み込めない: " + e.message); }
+  const files = ["js/data/courses.js", "js/data/terms.js", "js/data/quiz.js"].concat(fs.readdirSync(path.join(root, "js/widgets")).filter(f => f.endsWith(".js")).map(f => "js/widgets/" + f));
+  let n = 0;
+  files.forEach(f => fs.readFileSync(path.join(root, f), "utf8").split("\n").forEach((line, i) => {
+    if (line.includes("${")) return;   // JS template literals (runtime-built strings) are skipped
+    (line.match(/\$[^$"\n]+\$/g) || []).forEach(m => {
+      n++;
+      try { katex.renderToString(m.slice(1, -1).replace(/\\\\/g, "\\"), { throwOnError: true, strict: "ignore" }); }
+      catch (e) { bad(`${f}:${i + 1} の LaTeX が不正: ${m.slice(0, 50)} (${e.message.slice(0, 60)})`); }
+    });
+  }));
+})();
+
 if (problems.length) { console.error("NG:\n- " + problems.join("\n- ")); process.exit(1); }
 console.log("OK");

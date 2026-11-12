@@ -14,7 +14,7 @@
         steps: [
           { t: "微分方程式", l: [`y′(t) ＋ ${n(a)}·y(t) ＝ ${n(b)}　 y(0) ＝ ${n(c)}`, "一般形: y′ ＋ a y ＝ b、y(0) ＝ c"], note: "まず、解きたい式と初期値を書きます。" },
           { t: "両辺をラプラス変換", l: [`s Y(s) − y(0) ＋ ${n(a)} Y(s) ＝ ${n(b)}/s`, "(微分は s Y − y(0)、定数 b は b/s)"], note: "時間微分 y′ が、s をかけて初期値を引く形になり、微分方程式が代数の式に変わります。" },
-          { t: "Y(s) について解く(代数)", l: [`(s ＋ ${n(a)}) Y(s) ＝ ${n(b)}/s ＋ ${n(c)}`, `Y(s) ＝ (${n(b)} ＋ ${n(c)}s) / ( s(s ＋ ${n(a)}) )`], note: "Y(s) の式を、ふつうの代数で整理します。" },
+          { t: "Y(s) について解く(代数)", l: [`(s ＋ ${n(a)}) Y(s) ＝ ${n(b)}/s ＋ ${n(c)}`, `Y(s) ＝ (${n(b)} ＋ ${n(c)}s)/(s(s ＋ ${n(a)}))`], note: "Y(s) の式を、ふつうの代数で整理します。" },
           { t: "部分分数に分ける", l: [`K₁ ＝ [sY]ₛ₌₀ ＝ b/a ＝ ${n(K1, 3)}`, `K₂ ＝ [(s＋a)Y]ₛ₌₋ₐ ＝ c − b/a ＝ ${n(K2, 3)}`, `Y(s) ＝ ${n(K1, 3)}/s ${sgn(K2, 3)}/(s ＋ ${n(a)})`], note: "極は s＝0 と s＝−a の2つ。それぞれの係数を求めます。" },
           { t: "逆ラプラス変換", l: [`y(t) ＝ b/a ＋ (c − b/a) e^(−at)`, `　　 ＝ ${n(K1, 3)} ${sgn(K2, 3)}·e^(−${n(a)}t)`], note: "1/s は定数 1、1/(s＋a) は e^(−at)。これが答えです。" }
         ],
@@ -38,7 +38,7 @@
     title: "ラプラス変換で微分方程式を解く(1段ずつ)",
     group: "ctl", name: "微分方程式をラプラス変換で解く", desc: "微分方程式 → ラプラス変換 → 代数で解く → 部分分数 → 逆変換を、1段ずつ進める", order: 9, tag: "微分方程式の解法",
     formula: "微分方程式 → L変換 → Y(s) を代数で解く → 部分分数 → 逆変換 → y(t)",
-    says: "ラプラス変換は、微分を「s をかける」操作に変えます(L[y′] ＝ sY − y(0))。すると微分方程式が、Y(s) についての代数の式になって、ふつうに解けます。最後に逆変換で時間の関数にもどします。",
+    says: "ラプラス変換は、微分を「s をかける」操作に変えます$(\\mathcal{L}[\\frac{dy}{dt}] = sY - y(0))$。すると微分方程式が、Y(s) についての代数の式になって、ふつうに解けます。最後に逆変換で時間の関数にもどします。",
     meaning: "初期値は、変換した式の中に自動的に入ります。解いたあとは、本当にその y(t) が元の式を満たすか、数値計算の結果と重ねて確かめられます。",
     mount(el) {
       let key = "ex3", a = 2, b = 6, c = 1, k = 1;
@@ -53,10 +53,10 @@
         ctl.wireSliders($("[data-sl]"), (id, v) => { if (id === "a") a = v; else if (id === "b") b = v; else c = v; k = Math.min(k, 5); draw(); ST.markLab("ode"); });
       };
       const draw = () => {
-        if (key === "ex3" && a === 0) { body.innerHTML = "<p>a ＝ 0 のときは、この解き方の対象外です(y′ ＝ b の積分になります)。a を 0 以外にしてください。</p>"; pt.innerHTML = ""; cap.innerHTML = ""; return; }
+        if (key === "ex3" && a === 0) { body.innerHTML = ST.am("<p>a ＝ 0 のときは、この解き方の対象外です(y′ ＝ b の積分になります)。a を 0 以外にしてください。</p>"); pt.innerHTML = ""; cap.innerHTML = ""; return; }
         const B = build(key, a, b, c), N = B.steps.length, T = MODES[key].T;
         k = Math.max(1, Math.min(N, k));
-        body.innerHTML = B.steps.slice(0, k).map((s, i) => `<div style="${i === k - 1 ? "" : "opacity:.6"}"><div class="eyebrow"><span class="chip${i === k - 1 ? " ok" : ""}">${i + 1} / ${N}</span> ${s.t}</div><div class="hexbox" style="font-size:13px;margin-top:4px">${s.l.join("<br>")}</div>${i === k - 1 ? `<p class="cap" style="margin:6px 0 0">${s.note}</p>` : ""}</div>`).join("");
+        body.innerHTML = ST.am(B.steps.slice(0, k).map((s, i) => `<div style="${i === k - 1 ? "" : "opacity:.6"}"><div class="eyebrow"><span class="chip${i === k - 1 ? " ok" : ""}">${i + 1} / ${N}</span> ${s.t}</div><div class="hexbox" style="font-size:13px;margin-top:4px">${s.l.join("<br>")}</div>${i === k - 1 ? `<p class="cap" style="margin:6px 0 0">${s.note}</p>` : ""}</div>`).join(""));
         $("[data-prev]").disabled = k <= 1; $("[data-next]").disabled = k >= N;
         if (k >= N) {
           const r = ctl.rk4(B.ode, B.x0, .005, T / .005), num = ctl.col(r, 0), an = num.map((_, i) => B.f(i * .005));

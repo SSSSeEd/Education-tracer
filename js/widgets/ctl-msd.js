@@ -9,8 +9,8 @@
   ST.widget("msd", {
     title: "質量・ばね・ダンパ:力を加えて、変位を見る",
     group: "ctl", name: "質量・ばね・ダンパ", desc: "力を加える(または壁側を動かす)と、台車の変位とつり合いの式がどう動くか", order: 2, tag: "運動方程式",
-    formula: "M x″ ＋ C x′ ＋ K x ＝ f(t)",
-    says: "台車に働く力の合計が質量×加速度、という運動方程式です。ばねは変位 x に比例(K x)、ダンパは速度 x′ に比例(C x′)、質量は加速度 x″ に比例(M x″)する力を出します。",
+    formula: "$M \\frac{d^{2}x}{dt^{2}} + C \\frac{dx}{dt} + K x = f(t)$",
+    says: "台車に働く力の合計が質量×加速度、という運動方程式です。ばねは変位 x に比例(K x)、ダンパは速度 $\\frac{dx}{dt}$ に比例$(C \\frac{dx}{dt})$、質量は加速度 $\\frac{d^{2}x}{dt^{2}}$ に比例$(M \\frac{d^{2}x}{dt^{2}})$する力を出します。",
     meaning: "式の左の3つは「台車が自分で出している力」(慣性・粘性・ばね)で、合計が外から加えた力 f に等しくなります(つり合い式)。下のバーで、3つの力を足すと f になっていく様子が見えます。",
     mount(el) {
       let M = 2, C = 2, K = 8, A = 5, mode = "force", inp = "step", sim = null, ply = null;
@@ -54,10 +54,10 @@
         if (w) {
           const Kk = K * (u - x), Cc = C * (ctl.at(sim.us.map((_, i) => viF(i * DT)), DT, t) - v);
           bars.innerHTML = ctl.bar(bx, 8, bw, Kk, k, "var(--info)", "ばねの力", ctl.n(Kk, 2)) + ctl.bar(bx, 32, bw, Cc, k, "var(--ok)", "ダンパの力", ctl.n(Cc, 2)) + ctl.bar(bx, 62, bw, Ma, k, "var(--packet)", "M·a", ctl.n(Ma, 2));
-          eq.innerHTML = `M a ＝ K(xᵢ − x) ＋ C(vᵢ − v)<br>${ctl.n(Ma, 2)} ＝ ${ctl.n(Kk, 2)} ＋ ${ctl.n(Cc, 2)}`;
+          eq.innerHTML = ST.am(`M a ＝ K(xᵢ − x) ＋ C(vᵢ − v)<br>${ctl.n(Ma, 2)} ＝ ${ctl.n(Kk, 2)} ＋ ${ctl.n(Cc, 2)}`);
         } else {
           bars.innerHTML = ctl.bar(bx, 4, bw, Ma, k, "var(--packet)", "慣性 M·a", ctl.n(Ma, 2)) + ctl.bar(bx, 24, bw, Cv, k, "var(--ok)", "粘性 C·v", ctl.n(Cv, 2)) + ctl.bar(bx, 44, bw, Kx, k, "var(--info)", "ばね K·x", ctl.n(Kx, 2)) + ctl.bar(bx, 70, bw, u, k, "var(--attack)", "入力 f", ctl.n(u, 2));
-          eq.innerHTML = `M a ＋ C v ＋ K x ＝ f<br>${ctl.n(Ma, 2)} ＋ ${ctl.n(Cv, 2)} ＋ ${ctl.n(Kx, 2)} ＝ ${ctl.n(Ma + Cv + Kx, 2)}(f ＝ ${ctl.n(u, 2)})`;
+          eq.innerHTML = ST.am(`M a ＋ C v ＋ K x ＝ f<br>${ctl.n(Ma, 2)} ＋ ${ctl.n(Cv, 2)} ＋ ${ctl.n(Kx, 2)} ＝ ${ctl.n(Ma + Cv + Kx, 2)}(f ＝ ${ctl.n(u, 2)})`);
         }
         const hl = !w && inp === "step" && A ? [{ y: A / K, label: "最終値 f/K ＝ " + ctl.n(A / K, 2), color: "var(--ok)" }] : [];
         px.innerHTML = ctl.plot({ H: 120, x0: 0, x1: T, series: [{ dt: DT, y: sim.xs, color: "var(--packet)", label: "変位 x(t)" }].concat(w ? [{ dt: DT, y: sim.us, color: "var(--info)", label: "入力 xᵢ(t)", dash: "5 3", w: 1.5 }] : []), t, upto: t, hlines: hl, xlabel: "時間 s", aria: "変位の時間変化" });
@@ -65,7 +65,7 @@
       };
       const note = () => {
         const z = C / (2 * Math.sqrt(M * K)), wn = Math.sqrt(K / M);
-        cap.innerHTML = `固有角周波数 ωₙ ＝ √(K/M) ＝ ${ctl.n(wn, 2)} rad/s、減衰係数 ζ ＝ C/(2√(MK)) ＝ ${ctl.n(z, 2)}。` + (z < 1 ? "ζ が 1 より小さいので、行き過ぎて揺れながら落ち着きます。C を大きくすると揺れが減ります。" : "ζ が 1 以上なので、揺れずにゆっくり落ち着きます。C を小さくすると揺れ始めます。") + " 時間のスライダーで、途中の様子を戻して見られます。";
+        cap.innerHTML = ST.am(`固有角周波数 ωₙ ＝ √(K/M) ＝ ${ctl.n(wn, 2)} rad/s、減衰係数 ζ ＝ C/(2√(MK)) ＝ ${ctl.n(z, 2)}。` + (z < 1 ? "ζ が 1 より小さいので、行き過ぎて揺れながら落ち着きます。C を大きくすると揺れが減ります。" : "ζ が 1 以上なので、揺れずにゆっくり落ち着きます。C を小さくすると揺れ始めます。") + " 時間のスライダーで、途中の様子を戻して見られます。");
       };
       const redo = () => { run(); note(); ply.setT(T); ply.restart(); ST.markLab("msd"); };
       ply = ctl.player($("[data-ply]"), { T, draw: t => sim && draw(t) });

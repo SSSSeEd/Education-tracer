@@ -6,8 +6,8 @@
   ST.widget("lin", {
     title: "線形化:sin θ を θ に置き換えてよいか",
     group: "ctl", name: "線形化(アームの角度)", desc: "アームの運動を、非線形モデルと線形化したモデルで並べて動かす", order: 6, tag: "線形化",
-    formula: "sin θ ≈ sin 0 ＋ cos 0·(θ − 0) ＝ θ",
-    says: "線形でない関数を、ある点 x₀ のまわりだけ直線で近似する(テイラー展開を1次で切る)と、y ＝ f(x₀) ＋ A(x − x₀)(A ＝ f の微分)になります。アームでは θ ＝ 0 のまわりで sin θ ≈ θ と置き、J θ″ ＋ B θ′ ＋ M g l θ ＝ τ という線形モデルにします。",
+    formula: "$\\sin \\theta \\approx \\sin 0 + \\cos 0\\cdot (\\theta - 0) = \\theta$",
+    says: "線形でない関数を、ある点 $x_{0}$ のまわりだけ直線で近似する(テイラー展開を1次で切る)と、$y = f(x_{0}) + A(x - x_{0})$($A = f$ の微分)になります。アームでは $\\theta = 0$ のまわりで $\\sin \\theta \\approx \\theta$ と置き、$J \\frac{d^{2}\\theta }{dt^{2}} + B \\frac{d\\theta }{dt} + M g l \\theta = \\tau$ という線形モデルにします。",
     meaning: "角度が小さいうちは、sin θ と θ はほぼ同じ値なので、線形モデルは本物とほぼ重なって動きます。角度を大きくしていくと、sin θ は θ より小さくなる(重力の戻す力が弱くなる)ので、本物のほうがゆっくり揺れ、線形モデルとずれていきます。",
     mount(el) {
       let th0 = 40, B = .2, tau = 0, sim = null, ply = null;
@@ -36,7 +36,7 @@
       };
       const note = () => {
         const small = sim.err < 1;
-        cap.innerHTML = `線形モデルとの最大の差は ${ctl.n(sim.err, 1)}°。` + (small ? "ほとんど重なっています。角度が小さいので、sin θ ≈ θ の近似で十分です。" : "角度が大きいぶん、sin θ と θ の差が効いて、本物(橙)のほうがゆっくり揺れます。線形化は θ ＝ 0 の近くだけで使える近似です。") + ` 下のグラフは、sin θ と接線 θ の差(θ が小さいほど重なる)です。`;
+        cap.innerHTML = ST.am(`線形モデルとの最大の差は ${ctl.n(sim.err, 1)}°。` + (small ? "ほとんど重なっています。角度が小さいので、sin θ ≈ θ の近似で十分です。" : "角度が大きいぶん、sin θ と θ の差が効いて、本物(橙)のほうがゆっくり揺れます。線形化は θ ＝ 0 の近くだけで使える近似です。") + ` 下のグラフは、sin θ と接線 θ の差(θ が小さいほど重なる)です。`);
       };
       const redo = () => { run(); note(); ply.restart(); ST.markLab("lin"); };
       ply = ctl.player($("[data-ply]"), { T, draw: t => sim && draw(t), speed: 1.3 });

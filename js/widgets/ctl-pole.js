@@ -6,7 +6,7 @@
   ST.widget("pole", {
     title: "s平面の極と、時間の波形",
     group: "ctl", name: "極の位置と応答", desc: "s平面で極をドラッグすると、時間 t の波形(収束・発散・振動)がその場で変わる", order: 7, tag: "ラプラス変換",
-    formula: "L[eᵃᵗ] ＝ 1/(s − a)　　L[sin ωt] ＝ ω/(s² ＋ ω²)",
+    formula: "L[eᵃᵗ]$= \\frac{1}{s - a} \\quad \\mathcal{L}[\\sin \\omega t] = \\frac{\\omega }{s^{2} + \\omega ^{2}}$",
     says: "ラプラス変換は、時間 t の関数を s の関数に写します。分母が 0 になる s(極)の位置で、元の時間関数の形が決まります。極が左にあれば収束、右にあれば発散、虚軸の上なら振動が続きます。",
     meaning: "変換そのものは計算ですが、結果は「極の位置を見れば応答の形が分かる」ことが大事です。実軸の極 a は eᵃᵗ(a が負なら減っていく)。複素数の極 σ ± jω は、eˢᵗ·cos ωt(減りながら振動)。a や σ の大きさが速さ、ω が振動の細かさです。",
     mount(el) {
@@ -27,8 +27,8 @@
         const f = real ? t => Math.exp(sg * t) : t => Math.exp(sg * t) * Math.cos(w * t), Te = sg > 1e-9 ? Math.max(.4, Math.min(T, Math.log(12) / sg)) : T, ts = Array.from({ length: Math.round(Te / DT) + 1 }, (_, i) => i * DT), ys = ts.map(f);
         const env = real ? [] : [{ x: ts, y: ts.map(t => Math.exp(sg * t)), color: "var(--muted)", dash: "4 3", w: 1.2 }, { x: ts, y: ts.map(t => -Math.exp(sg * t)), color: "var(--muted)", dash: "4 3", w: 1.2 }];
         pt.innerHTML = ctl.plot({ H: 150, x0: 0, x1: Te, ymin: real ? 0 : undefined, series: env.concat([{ x: ts, y: ys, color: "var(--packet)", label: real ? "f(t) ＝ e^(" + ctl.n(sg, 2) + "t)" : "f(t) ＝ e^(" + ctl.n(sg, 2) + "t)·cos(" + ctl.n(w, 2) + "t)" }]), xlabel: sg > 1e-9 && Te < T ? "時間 t(増え方が大きいので、途中までを表示)" : "時間 t", aria: "時間応答" });
-        tab.innerHTML = real ? `F(s) ＝ 1/(s − a)　a ＝ ${ctl.n(sg, 2)}<br>　　　 ＝ 1/(s ${sg < 0 ? "＋ " + ctl.n(-sg, 2) : sg > 0 ? "− " + ctl.n(sg, 2) : ""})<br>f(t) ＝ e^(at) ＝ e^(${ctl.n(sg, 2)}·t)`
-          : `F(s) ＝ (s − σ)/((s − σ)² ＋ ω²)　σ ＝ ${ctl.n(sg, 2)}、ω ＝ ${ctl.n(w, 2)}<br>f(t) ＝ e^(σt)·cos(ωt)`;
+        tab.innerHTML = ST.am(real ? `F(s) ＝ 1/(s − a)　a ＝ ${ctl.n(sg, 2)}<br>　　　 ＝ 1/(s ${sg < 0 ? "＋ " + ctl.n(-sg, 2) : sg > 0 ? "− " + ctl.n(sg, 2) : ""})<br>f(t) ＝ e^(at) ＝ e^(${ctl.n(sg, 2)}·t)`
+          : `F(s) ＝ (s − σ)/((s − σ)² ＋ ω²)　σ ＝ ${ctl.n(sg, 2)}、ω ＝ ${ctl.n(w, 2)}<br>f(t) ＝ e^(σt)·cos(ωt)`);
         big.innerHTML = `<b>${sg < -1e-9 ? "収束(安定)" : sg > 1e-9 ? "発散(不安定)" : real ? "一定のまま" : "振動が続く"}</b><span>${sg < -1e-9 ? "約 " + ctl.n(1 / -sg, 2) + " 秒で 37%(1/e)に減る" : sg > 1e-9 ? "約 " + ctl.n(1 / sg, 2) + " 秒ごとに e 倍(2.7倍)に増える" : real ? "極が原点: 1/s(ステップ関数)" : "振幅が変わらず振動(虚軸上の極)"}</span>`;
         const wn = Math.hypot(sg, w), z = wn ? -sg / wn : 0;
         cap.innerHTML = (real ? "実軸上の1つの極は、指数関数(増える・減る)。左へ動かすほど速く 0 に近づき、右へ動かすほど速く増えます。" : "極の実部 σ が、振動の大きさの増減(包絡線)を決め、虚部 ω が振動の速さを決めます。") + (!real && sg < 0 ? ` 第6回の2次遅れとして見ると、固有角周波数 ωₙ ＝ 極の原点からの距離 ＝ ${ctl.n(wn, 2)}、減衰係数 ζ ＝ −σ/ωₙ ＝ ${ctl.n(z, 2)}。` : "");

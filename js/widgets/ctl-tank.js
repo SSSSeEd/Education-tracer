@@ -6,9 +6,9 @@
   ST.widget("tank", {
     title: "1タンク系:流入量を変えて、水位を見る",
     group: "ctl", name: "1タンク(水位系)", desc: "流入量を変えると、水位が時定数 A·R でゆっくり追いつく。RC回路と同じ形", order: 5, tag: "プロセス系",
-    formula: "A dh/dt ＋ h/R ＝ qᵢ",
-    says: "流入量 qᵢ と流出量 q_o の差が、水位の変化(断面積 A × dh/dt)になります。出口の流れ q_o は水位 h に比例して h/R。",
-    meaning: "水位が低いうちは流出が少なく、水がたまって水位が上がります。水位が上がるほど流出が増えて、やがて流入と流出が等しくなり、水位は R·qᵢ で止まります。この「追いつく速さ」が時定数 A·R。RC回路の e₀(t) と、まったく同じ形の動きです。",
+    formula: "$A \\frac{dh}{dt} + \\frac{h}{R} = q_{i}$",
+    says: "流入量 $q_{i}$ と流出量 $q_o$ の差が、水位の変化(断面積 $A \\times \\frac{dh}{dt}$)になります。出口の流れ $q_o$ は水位 h に比例して $\\frac{h}{R}$。",
+    meaning: "水位が低いうちは流出が少なく、水がたまって水位が上がります。水位が上がるほど流出が増えて、やがて流入と流出が等しくなり、水位は $R\\cdot q_{i}$ で止まります。この「追いつく速さ」が時定数 A·R。RC回路の $e_{0}(t)$ と、まったく同じ形の動きです。",
     mount(el) {
       let A = 2, R = 1.5, Q = 1, sim = null, ply = null;
       el.innerHTML = `${ctl.sliders([{ id: "Q", label: "流入量 qᵢ(0.5秒後に増やす)", min: .2, max: 3, step: .1, v: Q }, { id: "A", label: "タンクの断面積 A", min: .5, max: 4, step: .5, v: A }, { id: "R", label: "出口の抵抗 R", min: .5, max: 4, step: .5, v: R }])}
@@ -37,15 +37,15 @@
         s += `<text x="219" y="${bot + 14}" text-anchor="middle" class="svg-m" style="font-size:10px">抵抗 R</text>`;
         scene.innerHTML = s;
         const dh = (q - h / R) / A;
-        eq.innerHTML = `A·dh/dt ＋ h/R ＝ qᵢ<br>${A}×${ctl.n(dh, 3)} ＋ ${ctl.n(h / R, 3)} ＝ ${ctl.n(q, 2)}　(dh/dt ＝ ${ctl.n(dh, 3)})`;
+        eq.innerHTML = ST.am(`A·dh/dt ＋ h/R ＝ qᵢ<br>${A}×${ctl.n(dh, 3)} ＋ ${ctl.n(h / R, 3)} ＝ ${ctl.n(q, 2)}　(dh/dt ＝ ${ctl.n(dh, 3)})`);
         const hf = R * Q, tau = A * R;
         ph.innerHTML = ctl.plot({ H: 126, x0: 0, x1: T, series: [{ dt: DT, y: sim.h, color: "var(--info)", label: "水位 h(t)(RC回路なら eₒ(t))" }], hlines: [{ y: hf, label: "最終値 R·qᵢ ＝ " + ctl.n(hf, 2), color: "var(--ok)" }, { y: hf * .632, label: "63.2%", color: "var(--muted)" }], vlines: [{ x: T0 + tau, label: "t＝τ", color: "var(--packet)" }], t, upto: t, xlabel: "時間 s", aria: "水位の時間変化" });
         void qout;
       };
       const note = () => {
         const tau = A * R;
-        an.innerHTML = `<b>アナログ(類似性)</b><br>水位 h ↔ 電圧 eₒ　流量 q ↔ 電流 i<br>出口の抵抗 R ↔ 抵抗 R　断面積 A ↔ 容量 C<br>RC回路 C·deₒ/dt ＋ eₒ/R ＝ eᵢ/R と同じ形(qᵢ ↔ eᵢ/R)`;
-        cap.innerHTML = `時定数 τ ＝ A·R ＝ ${ctl.n(tau, 2)} 秒。流入を変えてから τ 秒後に、水位は最終値の約 63% まで届きます(オレンジの線)。A や R を大きくすると、追いつくのが遅くなります。`;
+        an.innerHTML = ST.am(`<b>アナログ(類似性)</b><br>水位 h ↔ 電圧 eₒ　流量 q ↔ 電流 i<br>出口の抵抗 R ↔ 抵抗 R　断面積 A ↔ 容量 C<br>RC回路 C·deₒ/dt ＋ eₒ/R ＝ eᵢ/R と同じ形(qᵢ ↔ eᵢ/R)`);
+        cap.innerHTML = ST.am(`時定数 τ ＝ A·R ＝ ${ctl.n(tau, 2)} 秒。流入を変えてから τ 秒後に、水位は最終値の約 63% まで届きます(オレンジの線)。A や R を大きくすると、追いつくのが遅くなります。`);
       };
       const redo = () => { run(); note(); ply.restart(); ST.markLab("tank"); };
       ply = ctl.player($("[data-ply]"), { T, draw: t => sim && draw(t), speed: 1.4 });
