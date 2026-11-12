@@ -8,3 +8,6 @@
 - 解説は AI(Claude)が授業資料をもとに作成したもので、誤りがありえます。大事な判断の前には資料で確認してください。
 - 検査: `node tools/check.js` と `node tools/test.js`
 - 個人用(noindex)。`.nojekyll` は消さないでください。
+
+## 公開手順
+GitHub Pages の公開元は **`claude/project-thread-m6kozb`**(Deploy from a branch / `(root)`)。変更をサイトに出すには、PR の base をこの枝にしてマージする(1〜2分で反映)。別の枝へマージしても公開されない。詳しくは HANDOFF.md の「公開手順」。URL: https://sssseed.github.io/Education-tracer/
