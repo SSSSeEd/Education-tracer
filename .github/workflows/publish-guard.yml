@@ -1,0 +1,28 @@
+# 公開ブランチ(GitHub Pages の公開元)以外へマージされたPRを見つけて知らせる。
+# 「マージしたのにサイトに反映されない」の再発防止。公開元は PUBLISH_BRANCH。Pages の設定を変えたら、ここも直す。
+name: publish-guard
+on:
+  pull_request:
+    types: [closed]
+permissions:
+  pull-requests: write
+  contents: read
+env:
+  PUBLISH_BRANCH: claude/project-thread-m6kozb
+jobs:
+  guard:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref != 'claude/project-thread-m6kozb'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Warn and try to open a PR to the publish branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          NUM: ${{ github.event.pull_request.number }}
+        run: |
+          body="⚠️ このPRは公開ブランチ(\`$PUBLISH_BRANCH\`)ではなく \`$BASE\` にマージされたため、**公開サイトには反映されません**。\`$BASE\` から \`$PUBLISH_BRANCH\` へのPRをマージすると反映されます(手順は HANDOFF.md の「公開手順」)。"
+          gh pr comment "$NUM" --repo "$REPO" --body "$body" || true
+          if [ -z "$(gh pr list --repo "$REPO" --head "$BASE" --base "$PUBLISH_BRANCH" --state open --json number --jq '.[0].number')" ]; then
+            gh pr create --repo "$REPO" --head "$BASE" --base "$PUBLISH_BRANCH" --title "公開ブランチに取り込む($BASE)" --body "#$NUM が公開ブランチ以外にマージされたため、自動で作成しました。マージすると公開サイトに反映されます。" || echo "PR を自動作成できませんでした(Settings → Actions → Allow GitHub Actions to create pull requests が必要)"
+          fi

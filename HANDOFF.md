@@ -2,13 +2,21 @@
 
 最終更新: 2026-11-12(日本時間)・情報数学(第5回まで)、応用数学(CR方程式まで)、制御工学(第1〜6回)を実装済み。これだけ読めば続けられるように書く。数字は更新日時点。現在値は `node tools/check.js` で確認する。
 
+## 公開手順(必ず守る)
+- **公開元は `claude/project-thread-m6kozb` 1本だけ**(Settings → Pages = Deploy from a branch / この枝 / `(root)`)。サイトに出したい変更は、**この枝へ入れる**。push またはマージから1〜2分で反映。
+- 作業枝(`claude/project-thread-xxxx`)は、**PR の base を必ず `claude/project-thread-m6kozb` にする**。別の枝(例 jlp8zi)へマージしても公開されない(2026-11-12 に応用数学・制御工学で発生)。
+- 新しい作業枝は、最新の `claude/project-thread-m6kozb` から作る。ほかの枝に積んだ作業は、先に m6kozb へ取り込む。
+- 反映の確認: Actions の「pages build and deployment」が成功か、head_branch が m6kozb かを見る。ホーム画面アプリは、閉じて開き直す(Service Worker のキャッシュ名 `sw.js` の CACHE を上げると確実)。
+- 再発防止: `.github/workflows/publish-guard.yml` が、公開枝以外へマージされたPRにコメントし、公開枝へのPRを自動作成する(作れない場合は Settings → Actions → General → 「Allow GitHub Actions to create and approve pull requests」をオン)。PRテンプレートにも base の確認欄あり。
+- 公開元の枝を変えるとき: Pages の設定、`publish-guard.yml` の `PUBLISH_BRANCH`、この節の3か所を同時に直す。
+
 ## これは何か
 SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支援サイト。security-tracer と同じ作り(静的サイト・ビルドなし・素のJS・グローバル名前空間 `ST`・iPhone幅390px基準)で、授業資料を「**説明 → アニメーション(ラボ) → 問題演習**」の順で学べるようにする。まず自分専用(noindex)。いずれクラス内に公開する予定。
 - 構成・スキーマ・デザインの正本は、Vault の `Knowledge\security-tracer-manual\`(README と 01〜06。届くときだけ読む)と、security-tracer リポジトリ。ここでは差分だけ書く。
 
 ## 運用の事実
 - リポジトリ: https://github.com/SSSSeEd/Education-tracer (`main` はまだ無い。作業ブランチは **`claude/project-thread-jlp8zi`**(第3回まで)。第4回は **`claude/project-thread-m6kozb`** に積んだ(jlp8zi の続き)。第5回は **`claude/project-thread-dqpc89`**(m6kozb の続き)。SeEd はマージ方式にすると決めたので、このブランチから main への PR を出してある。次の担当はこの最新ブランチから続け、Pages の公開ブランチ設定は SeEd に確認する。PR は未作成)
-- 公開: GitHub Pages「Deploy from a branch」= 上のブランチ / `(root)`。**push するたびに1〜2分で反映**。URL は `https://sssseed.github.io/Education-tracer/`(SeEd が設定済み・表示確認済み)。マージは区切りのときだけで足りる(SeEd は毎回のマージを面倒に感じる)。PR を出すときは、指示文の帰属ブロックと assignee/reviewer の手順に従う。
+- 公開: GitHub Pages「Deploy from a branch」= **`claude/project-thread-m6kozb`** / `(root)`(下の「公開手順」参照。上の枝の説明は古い)。**push するたびに1〜2分で反映**。URL は `https://sssseed.github.io/Education-tracer/`(SeEd が設定済み・表示確認済み)。マージは区切りのときだけで足りる(SeEd は毎回のマージを面倒に感じる)。PR を出すときは、指示文の帰属ブロックと assignee/reviewer の手順に従う。
 - 資料の置き場所(SeEd が置く): `C:\Users\eyedr\Documents\Vault\Knowledge\education-tracer-materials\<科目名>\`(Vault が接続されているとき)。今回の情報数学は添付で受け取った。
 - 検証: `node tools/check.js`(OK になること)と `node tools/test.js`(19件)。UI は `python3 -m http.server 8765` と Playwright で、幅390pxのライト/ダーク両方、全ルートで「コンソールエラーなし・横はみ出しなし」を確認してから push。
 - このサンドボックスでは `python3 - <<EOF` でファイルを書き換えようとした際に、安全確認で止められたことがある。ファイル編集は Edit/Write ツールを使う。
