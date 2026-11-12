@@ -13,7 +13,7 @@
       let th0 = 40, B = .2, tau = 0, sim = null, ply = null;
       el.innerHTML = `${ctl.sliders([{ id: "th0", label: "最初の角度 θ(0)", min: 5, max: 150, step: 5, v: th0, unit: "°" }, { id: "tau", label: "加えるトルク τ(一定)", min: 0, max: 3, step: .5, v: tau }, { id: "B", label: "粘性抵抗 B", min: 0, max: 1, step: .1, v: B }])}
         <div data-ply></div>
-        <div class="stage" style="padding:4px"><svg viewBox="0 0 340 150" style="width:100%;display:block" role="img" aria-label="アームの動き" data-scene></svg></div>
+        <div class="stage" style="padding:4px"><svg viewBox="0 0 340 196" style="width:100%;display:block" role="img" aria-label="アームの動き" data-scene></svg></div>
         <div class="stage" data-pa style="padding:6px"></div><div class="stage" data-ps style="padding:6px"></div><p class="cap" data-cap></p>`;
       const $ = s => el.querySelector(s), scene = $("[data-scene]"), pa = $("[data-pa]"), ps = $("[data-ps]"), cap = $("[data-cap]");
       const run = () => {
@@ -23,7 +23,7 @@
         sim.err = Math.max(...sim.nl.map((x, i) => Math.abs(x - sim.li[i])));
       };
       const draw = t => {
-        const a = ctl.at(sim.nl, DT, t) * RAD, b = ctl.at(sim.li, DT, t) * RAD, px = 100, py = 22, L = 96;
+        const a = ctl.at(sim.nl, DT, t) * RAD, b = ctl.at(sim.li, DT, t) * RAD, px = 100, py = 96, L = 78;
         const arm = (ang, c, dash, bob) => { const x = px + L * Math.sin(ang), y = py + L * Math.cos(ang); return `<line x1="${px}" y1="${py}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${c}" stroke-width="${dash ? 3 : 5}" stroke-linecap="round"${dash ? ` stroke-dasharray="6 5"` : ""}/>${bob ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="${c}" stroke="var(--surface)" stroke-width="2"/>` : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill="none" stroke="${c}" stroke-width="2" stroke-dasharray="3 2"/>`}`; };
         let s = `<line x1="${px}" y1="${py}" x2="${px}" y2="${py + L + 10}" stroke="var(--muted)" stroke-dasharray="3 3"/><rect x="${px - 30}" y="${py - 10}" width="60" height="8" fill="var(--sunken)" stroke="var(--muted)"/>`;
         s += arm(b, "var(--info)", true, false) + arm(a, "var(--packet)", false, true) + `<circle cx="${px}" cy="${py}" r="4" fill="var(--ink)"/>`;

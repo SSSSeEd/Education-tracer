@@ -105,7 +105,7 @@
   ST.view("course", (v, id) => {
     const c = ST.COURSE[id] || ST.COURSES[0];
     v.innerHTML = `<a href="#courses" style="font-size:14px">‹ コース一覧</a>
-      <div class="page-h" style="--cc:${c.color}"><div class="eyebrow" style="color:${c.color}">COURSE ${c.n}</div><h1>${esc(c.title)}</h1><p class="lead">${esc(c.desc)}</p><a href="#tree">スキルツリーで見る ›</a></div>
+      <div class="page-h" style="--cc:${c.color}"><div class="eyebrow" style="color:${c.color}">COURSE ${c.n}</div><h1>${esc(c.title)}</h1><div class="course-lead"><div class="eyebrow" style="color:${c.color}">このコースで学ぶこと</div><p>${esc(c.desc)}</p></div><a href="#tree">スキルツリーで見る ›</a></div>
       <div class="card reading" style="--cc:${c.color}"><div class="line-list">${c.lessons.map((l, i) => `<a href="#l-${l.id}"><span class="dot ${ST.P.lessons[l.id] ? "on" : ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? "locked" : ""}"></span><div><div class="t">${i + 1}. ${esc(l.title)}</div><div class="s">約${l.min}分${l.blocks.filter(b => b.w).length ? " · 図解 " + l.blocks.filter(b => b.w).length + "つ" : ""}${ST.P.lessons[l.id] ? " · 完了" : ""}${ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? " · 🔒 先に" + ST.missingReqs(l.id).map(r => "「" + esc(ST.LESSON[r].title) + "」").join("") : ""}</div></div></a>`).join("")}</div></div>`;
   });
 
@@ -120,7 +120,10 @@
       : b.key ? `<div class="keypoints"><div class="eyebrow">このレッスンのポイント</div><ul>${b.key.map(x => `<li>${md(x)}</li>`).join("")}</ul></div>` : "";
     // Group consecutive prose blocks into reading columns; widgets span the full width.
     let html = "", buf = "";
-    l.blocks.forEach(b => { if (b.w) { if (buf) { html += `<div class="prose">${buf}</div>`; buf = ""; } html += block(b); } else buf += block(b); });
+    // 冒頭の説明: goal があれば「学ぶこと」として強調。なければ最初の段落を取り出して強調する。
+    let lead = l.goal ? { label: "このレッスンで学ぶこと", text: l.goal } : null, blocks = l.blocks;
+    if (!lead && blocks[0] && blocks[0].p) { lead = { label: "はじめに", text: blocks[0].p }; blocks = blocks.slice(1); }
+    blocks.forEach(b => { if (b.w) { if (buf) { html += `<div class="prose">${buf}</div>`; buf = ""; } html += block(b); } else buf += block(b); });
     if (buf) html += `<div class="prose">${buf}</div>`;
     const miss = ST.missingReqs(l.id), locked = !ST.P.lessons[l.id] && miss.length && ST.gated("l-" + l.id);
     if (locked) html = gate("l-" + l.id, "このレッスンは、次のレッスンの知識を前提にしています。先に読むと理解しやすくなります。", miss);
@@ -128,6 +131,7 @@
     v.innerHTML = `<article class="lesson" style="--cc:${c.color}">
       <a href="#course-${c.id}" style="font-size:14px">‹ ${esc(c.title)}</a>
       <header><div class="eyebrow" style="color:${c.color}">COURSE ${c.n} · LESSON ${l.idx + 1}/${c.lessons.length} · 約${l.min}分</div><h1>${esc(l.title)}</h1></header>
+      ${lead ? `<div class="lesson-lead"><div class="eyebrow" style="color:${c.color}">${lead.label}</div><p>${md(lead.text)}</p></div>` : ""}
       ${html}
       <div class="card"><div class="eyebrow">関連する用語</div><div class="filters" style="margin-top:8px">${l.terms.filter(t => ST.TERM[t]).map(t => `<a class="tag" href="#term-${t}">${esc(ST.TERM[t].name)}</a>`).join("")}</div>
         <div class="eyebrow" style="margin-top:14px;margin-bottom:6px">出典</div>${ST.srcList(l.src)}

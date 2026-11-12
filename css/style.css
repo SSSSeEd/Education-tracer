@@ -147,6 +147,9 @@ label.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(
 .lesson .prose{display:flex;flex-direction:column;gap:12px;max-width:68ch}
 .lesson .prose ul,.lesson .prose ol{margin:0;padding-left:1.3em}
 .lesson .prose li+li{margin-top:4px}
+.lesson-lead,.course-lead{border-left:4px solid var(--cc,var(--packet));background:var(--surface);padding:12px 16px;border-radius:0 var(--r) var(--r) 0;max-width:68ch}
+.lesson-lead p,.course-lead p{margin:4px 0 0;font-size:17px;font-weight:600;line-height:1.65;color:var(--ink)}
+.course-lead{margin:8px 0}
 .keypoints{border-left:3px solid var(--cc,var(--packet));background:var(--surface);padding:12px 16px;border-radius:0 var(--r) var(--r) 0}
 .keypoints ul{margin:6px 0 0;padding-left:1.2em}
 .callout{padding:12px 14px;border-radius:8px;font-size:14px}
