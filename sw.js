@@ -1,7 +1,7 @@
 "use strict";
 /* Offline support. Network first (so lessons and news stay current), falling back to the cached copy when offline.
    Same-origin GET only; web fonts from other origins are not cached (system fonts are used offline). */
-const CACHE = "edutracer-v4";
+const CACHE = "edutracer-v5";
 const SHELL = [
   "./",
   "index.html",
@@ -63,6 +63,9 @@ const SHELL = [
   "js/widgets/ctl-ode.js",
   "js/widgets/ctl-elem.js",
   "js/widgets/ctl-blk.js",
+  "js/widgets/ctl-ltab.js",
+  "js/widgets/ctl-euler.js",
+  "js/widgets/ctl-analog.js",
   "js/views.js",
   "js/app.js"
 ];

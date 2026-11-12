@@ -319,6 +319,12 @@ ST.TERMS = [
   how:"多項式・eᶻ は ℂ 全体。1/z は ℂ ∖ {0}。Log z や √z(主値)は ℂ ∖ (−∞, 0]。z̄、|z|² はどこも正則でない。",
   risk:"1点だけで微分できても(|z|² の原点)、正則な範囲には入らない。まわりの円板の全部で微分できる点だけ。",
   defense:["穴(極)と切れ目を先に探す","正則な点のまわりに小円がとれるか確かめる"],
-  src:["am7"]}
+  src:["am7"]},
+ {id:"euler-formula", name:"オイラーの公式", en:"Euler's formula", cat:"制御工学", lab:"euler",
+  summary:"複素数の指数関数を cos と sin で表す式 e^(jθ) = cos θ + j sin θ。",
+  how:"根が a ± jb のとき、e^((a±jb)t) = e^(at)(cos bt ± j sin bt)。共役の2項を足すと虚部が消え、実数の波形 e^(at) の cos・sin が残る。",
+  risk:"j を普通の数のように扱い忘れると、虚部の打ち消し合いを見落とす。K₁、K₂ が共役であることが前提。",
+  defense:["共役の2項は足すと虚部が消えると覚える","平方完成して表の e^(at) sin bt の行に合わせて確かめる"],
+  src:["ce4"]}
 ];
 ST.TERM = Object.fromEntries(ST.TERMS.map(t => [t.id, t]));
