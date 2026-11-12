@@ -11,11 +11,11 @@
     mech: {
       name: "機械系(質量・ばね・ダンパ)",
       steps: [
-        { t: "① 座標と正の向きを決める", note: "台車の位置 x を、右向きを正にとります。これで、力や速度の「符号」が決まります(右向きの力は＋、左向きは−)。", eq: "x \\;(\\text{右向きが正})" },
+        { t: "① 座標と正の向きを決める", note: "壁は左、台車は右にあります。外力は、台車を壁に向かって(左向きに)押します。この壁に向かう向きを正にとります(これで、力や速度の符号が決まります)。", eq: "x \\;(\\text{壁に向かう向きが正})" },
         { t: "② 台車だけを切り離す", note: "ばねとダンパをいったん消して、台車が受ける力だけを矢印で描く準備をします(自由体図)。", eq: "" },
-        { t: "③ ばねの力", note: "ばねは、伸びると引き戻します。x が正(右へ動いた)ならば、力は左向き。だから −K x です。", eq: "-K x" },
+        { t: "③ ばねの力", note: "ばねは、縮むと押し返します。x が正(壁に近づいた)ならば、力は壁から離れる右向き。正の向きと逆なので −K x です。", eq: "-K x" },
         { t: "④ ダンパの力", note: "ダンパは、動きをじゃまします。速度と逆向きの力なので −C dx/dt です。", eq: "-K x \\;\\; -C \\frac{dx}{dt}" },
-        { t: "⑤ 外から加える力", note: "右向きに押す力を f とします。", eq: "-K x \\;\\; -C \\frac{dx}{dt} \\;\\; +f" },
+        { t: "⑤ 外から加える力", note: "壁に向かって(左向きに)押す力を f とします。正の向きなので ＋f です。", eq: "-K x \\;\\; -C \\frac{dx}{dt} \\;\\; +f" },
         { t: "⑥ 合計 ＝ 質量 × 加速度", note: "力の合計を M d²x/dt² とおいて、左辺にまとめると運動方程式になります。", eq: "M \\frac{d^{2}x}{dt^{2}} = f - K x - C \\frac{dx}{dt} \\;\\Rightarrow\\; M \\frac{d^{2}x}{dt^{2}} + C \\frac{dx}{dt} + K x = f" }
       ],
       svg(s) {
@@ -24,10 +24,10 @@
         o += `<g opacity="${fade ? .22 : 1}">${ctl.spring(9, L, cy + 10, 6, 6, C.k)}${ctl.damper(9, L, cy + H - 10, C.c)}</g>`;
         o += `<rect x="${L}" y="${cy}" width="${W}" height="${H}" rx="4" fill="var(--surface)" stroke="${C.ink}" stroke-width="2"/>${txt(L + W / 2, cy + H / 2 + 5, "M", C.ink, "middle", 14)}`;
         o += `<circle cx="${L + 14}" cy="${cy + H + 8}" r="5.5" fill="var(--surface)" stroke="${C.ink}" stroke-width="1.6"/><circle cx="${L + W - 14}" cy="${cy + H + 8}" r="5.5" fill="var(--surface)" stroke="${C.ink}" stroke-width="1.6"/>`;
-        o += A(L + W / 2 - 10, cy + H + 40, 50, C.ink, 2.5) + txt(L + W / 2 - 14, cy + H + 44, "x", C.ink, "end", 12) + txt(L + W / 2 + 44, cy + H + 54, "正の向き", C.mute, "middle", 9.5);
-        if (s >= 2) o += A(L, cy + 12, -60, C.k, 4) + txt(L - 64, cy + 6, "−K x", C.k, "end", 11);
-        if (s >= 3) o += A(L, cy + H - 12, -60, C.c, 4) + txt(L - 64, cy + H - 16, "−C dx/dt", C.c, "end", 11);
-        if (s >= 4) o += A(L + W, cy + H / 2, 60, C.f, 4) + txt(L + W + 4, cy + H / 2 - 8, "f", C.f, "start", 12);
+        o += A(L + W / 2 + 30, cy + H + 40, -50, C.ink, 2.5) + txt(L + W / 2 + 36, cy + H + 44, "x", C.ink, "start", 12) + txt(L + W / 2 + 5, cy + H + 54, "正の向き(壁へ)", C.mute, "middle", 9.5);
+        if (s >= 2) o += A(L - 60, cy + 12, 60, C.k, 4) + txt(L - 64, cy + 6, "−K x", C.k, "end", 11);
+        if (s >= 3) o += A(L - 60, cy + H - 12, 60, C.c, 4) + txt(L - 64, cy + H - 16, "−C dx/dt", C.c, "end", 11);
+        if (s >= 4) o += A(L + W + 60, cy + H / 2, -60, C.f, 4) + txt(L + W + 4, cy + H / 2 - 8, "f", C.f, "start", 12);
         return o;
       }
     },
