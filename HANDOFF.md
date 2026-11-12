@@ -40,10 +40,10 @@ SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支�
 
 ## 応用数学 アニメーション案の実装(2026-11-12 追加)
 - 元: Vault `suggest/education-animation.pdf` の応用数学(複素数)案。z平面→w平面の写像は対象外。
-- 新ラボ3本: `cpolar`(極形式。a+bi と r(cosθ+i sinθ) が同時更新)、`carg`(偏角の象限ミス。arctan と本当の角度がずれると赤く光る)、`ccauchy`(円周を一周する積分。z²=0、1/z=±2πi、向きで符号反転)。
-- 新レッスン2本: `am-arg`(am-mult の次)、`am-cauchy`(am-path の次。積分路の符号は問題文の読み方として本文に記載)。用語+3、クイズ+5。sw.js の CACHE を v4 に。
+- 新ラボ2本(偏角の象限ミス/arctan のラボは SeEd の指示で削除): `cpolar`(極形式。a+bi と r(cosθ+i sinθ) が同時更新)、`ccauchy`(円周を一周する積分。z²=0、1/z=±2πi、向きで符号反転)。
+- 新レッスン2本: `am-polar`(am-mult の次)、`am-cauchy`(am-path の次。積分路の符号は問題文の読み方として本文に記載)。用語+2、クイズ+3。sw.js の CACHE を v4 に。
 - 既存で足りていたため作らなかったもの: 掛け算とド・モアブル・1のn乗根=cmul/croots、CR方程式=ccr/capproach、線積分=csum/cpath。CRの「2本の矢印が重なる」形そのものは未実装(ccr の青・橙の矢印で近い見せ方)。
-- Claudeが作った解説(SeEd確認待ち): am-arg・am-cauchy の本文と練習問題。
+- Claudeが作った解説(SeEd確認待ち): am-polar・am-cauchy の本文と練習問題。
 
 ## 制御工学(2026-11-12 追加・第1〜6回ぶん実装済み)
 - 資料: Vault の `Knowledge\security-tracer-manual\制御工学\`(PDF7つ: 第1〜6回の授業資料と「機械系2次遅れ要素の解説」)。作業ブランチ **`claude/project-thread-5pz8rh`**(ベースは情報数学・応用数学を含む `jlp8zi` の最新)。PR はこのブランチから出す。
