@@ -81,6 +81,7 @@ const SHELL = [
   "js/widgets/_lap.js",
   "js/widgets/ctl-msd.js",
   "js/widgets/ctl-build.js",
+  "js/widgets/ctl-tfstep.js",
   "js/widgets/ctl-pfd.js",
   "js/widgets/ctl-ltab.js",
   "js/views.js",
