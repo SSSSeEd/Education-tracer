@@ -1,7 +1,7 @@
 "use strict";
 /* Offline support. Network first (so lessons and news stay current), falling back to the cached copy when offline.
    Same-origin GET only; web fonts from other origins are not cached (system fonts are used offline). */
-const CACHE = "edutracer-v11";
+const CACHE = "edutracer-v13";
 const SHELL = [
   "./",
   "index.html",
@@ -37,6 +37,7 @@ const SHELL = [
   "js/data/terms.js",
   "js/data/courses.js",
   "js/data/quiz.js",
+  "js/data/feedback.js",
   "js/widgets/_kit.js",
   "js/widgets/comb-choose.js",
   "js/widgets/comb-pascal.js",
@@ -83,6 +84,7 @@ const SHELL = [
   "js/widgets/ctl-pfd.js",
   "js/widgets/ctl-ltab.js",
   "js/views.js",
+  "js/feedback.js",
   "js/app.js"
 ];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });

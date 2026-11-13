@@ -46,7 +46,7 @@ main{flex:1;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:m
 .reading{max-width:760px}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
-nav.tabs .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+nav.tabs .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
 nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 6px;text-decoration:none;color:var(--muted);font-size:10.5px}
 nav.tabs a svg{width:22px;height:22px}
 nav.tabs a{position:relative}
@@ -520,3 +520,12 @@ nav.tabs a[aria-current="page"] svg{stroke-width:2.2}
 .lap-r{display:grid;grid-template-columns:1fr auto 1.4fr;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);overflow-x:auto}
 .lap-ar{color:var(--muted);font-size:12px}
 .lap-r.on{background:color-mix(in srgb,var(--packet) 22%,var(--surface));outline:2px solid var(--packet);outline-offset:-2px}
+
+/* feedback */
+.fb{display:flex;flex-direction:column;gap:12px}
+.fb-priv{margin:0;padding-left:1.2em;font-size:14px;line-height:1.7;color:var(--muted)}
+.fb-priv b{color:var(--ink)}
+.fb-off{margin:0;padding:8px 10px;border-radius:8px;background:var(--warn-soft);font-size:14px}
+.fb textarea.input{font-family:inherit;font-size:16px;line-height:1.6}
+.fb-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.fb-msg{margin:0;min-height:1.4em}
