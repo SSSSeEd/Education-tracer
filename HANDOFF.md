@@ -17,7 +17,7 @@ SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支�
 ## 運用の事実
 - リポジトリ: https://github.com/SSSSeEd/Education-tracer (`main` はまだ無い。作業ブランチは **`claude/project-thread-jlp8zi`**(第3回まで)。第4回は **`claude/project-thread-m6kozb`** に積んだ(jlp8zi の続き)。第5回は **`claude/project-thread-dqpc89`**(m6kozb の続き)。SeEd はマージ方式にすると決めたので、このブランチから main への PR を出してある。次の担当はこの最新ブランチから続け、Pages の公開ブランチ設定は SeEd に確認する。PR は未作成)
 - 公開: GitHub Pages「Deploy from a branch」= **`claude/project-thread-m6kozb`** / `(root)`(下の「公開手順」参照。上の枝の説明は古い)。**push するたびに1〜2分で反映**。URL は `https://sssseed.github.io/Education-tracer/`(SeEd が設定済み・表示確認済み)。マージは区切りのときだけで足りる(SeEd は毎回のマージを面倒に感じる)。PR を出すときは、指示文の帰属ブロックと assignee/reviewer の手順に従う。
-- 資料の置き場所(SeEd が置く): `C:\Users\eyedr\Documents\Vault\Knowledge\education-tracer-materials\<科目名>\`(Vault が接続されているとき)。今回の情報数学は添付で受け取った。
+- 資料の置き場所: SeEd 側の非公開の場所。リポジトリには置かない(パスも書かない)。
 - 検証: `node tools/check.js`(OK になること)と `node tools/test.js`(19件)。UI は `python3 -m http.server 8765` と Playwright で、幅390pxのライト/ダーク両方、全ルートで「コンソールエラーなし・横はみ出しなし」を確認してから push。
 - このサンドボックスでは `python3 - <<EOF` でファイルを書き換えようとした際に、安全確認で止められたことがある。ファイル編集は Edit/Write ツールを使う。
 - github.io へは、この環境から curl が通らない(403)。公開確認は SeEd に頼む。
@@ -27,7 +27,7 @@ SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支�
 - レッスン: 第1回 = im-binom + im-pascal。第2回 = im-rule2n + im-vander + im-alt。**第3回(実装済み)** = im-ex-select(演習2.16・2.17)、im-ex-atleast(演習1・2)、im-ex-points(演習3・4)、im-ex-grid(演習6・7)。**第4回(実装済み)** = im-anagram(重複順列・BENZENE・格子を R/D の並べ替えで)、im-gifts(プレゼント18,900の3通り)、im-money(お金を分ける・仕切り棒・重複組合せ入口)、im-ordpart(順序分割と班づくり)。**第5回(実装済み)** = im-heq(方程式の解の個数・問1〜4)、im-stairs(階段 漸化式・問5)、im-stairs-diag(x+2y=15・パスカルの斜めの和)、im-stairs-more(問6・7)。
 - ラボ(`js/widgets/comb-*.js`、`group:"comb"`、order順): pascal 1, choose 2, subsets 3, split 4, rule1 5, vander 6, committee 7, atleast 8, points 9, polygon 10, rects 11, lattice 12、anagram 13、gifts 14、bars 15、partition 16、heq 17、stairs 18、fibpascal 19。共通の関数は `js/widgets/_comb.js`(ST.C / combIdx / permIdx / countRun「全部数える」ループ / ringPts)。
 - 新しい用語: product-rule(積の法則)、sum-rule(和の法則)、complement-counting(余事象)、permutation-repetition(重複順列)、ordered-partition(順序分割)、combination-repetition(重複組合せ)。出典 `im3`・`im4`。
-- 資料の置き場所: Vault には無く、SeEd のアップロード(`/mnt/project-files/uploads/hearth/`、PDF5つ=後期①〜⑤相当+演習7の図)で受け取った。第4回=「後期④」(重複順列・プレゼント・お金を分ける・順序分割・重複組合せ入口)、第5回=「後期⑤」(解答版)。いずれもそのPDFの中。
+- 資料: SeEd のアップロードで受け取った(リポジトリには置かない)。第4回=「後期④」(重複順列・プレゼント・お金を分ける・順序分割・重複組合せ入口)、第5回=「後期⑤」(解答版)。いずれもそのPDFの中。
 - 答えが資料に無い演習1・2・3・4・6と第4回 問1(カツコイイイカ=420)・お菓子の「組合せ的解釈」は、Claudeが解いて「Claudeによる解説」と明記済み。演習3(b)は「p1もp2も通らない=45」と解釈(65の別解釈も本文に注記)。SeEdの確認待ち。
 
 ## 応用数学(2026-11-11 追加・複素数〜CR方程式まで実装済み)
@@ -51,7 +51,7 @@ SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支�
 - 新レッスン `im-pick`(im-stairs-more の次。Claudeが作った解説・問題。SeEd確認待ち)。既存の gifts(4,2,2,2の配り方)・bars(コイン、タップ操作)とは別内容のため重複なし。sw.js の CACHE を v6 に。
 
 ## 制御工学(2026-11-12 追加・第1〜6回ぶん実装済み)
-- 資料: Vault の `Knowledge\security-tracer-manual\制御工学\`(PDF7つ: 第1〜6回の授業資料と「機械系2次遅れ要素の解説」)。作業ブランチ **`claude/project-thread-5pz8rh`**(ベースは情報数学・応用数学を含む `jlp8zi` の最新)。PR はこのブランチから出す。
+- 資料: 授業資料のファイルはリポジトリに置かない(パスも書かない)。作業ブランチ **`claude/project-thread-5pz8rh`**(ベースは情報数学・応用数学を含む `jlp8zi` の最新)。PR はこのブランチから出す。
 - SeEd の要望: 力や電圧を実際に加えて、変位や電流を見るアニメーションで、運動方程式を立てるイメージを作る。ラプラス変換は変換そのものでなく「極の位置と応答」「部分分数を1項ずつ足す」「式変形を1段ずつ」で見せる。
 - コース `ce`(制御工学、色 c3)、レッスン13本: ce-fbk(第1回①)、ce-mech(第1回②)、ce-elec・ce-filter・ce-motor(第2回)、ce-process・ce-linear・ce-laplace(第3回)、ce-invlap・ce-ode(第4回)、ce-tf(第5回)、ce-elements・ce-blocks(第6回)。
 - ラボ11本(`js/widgets/ctl-*.js`、`group:"ctl"`、共通は `_ctl.js` の `ST.ctl`: RK4・時間プレーヤー(▶/↺/スクラブバー)・折れ線グラフ・スライダー・ばね/ダンパ/回路記号): fbk(フィードバック)、msd(質量・ばね・ダンパ。力を加える/壁側を動かす)、rlc(RLC・ローパス・ハイパス。電流は流れる点の速さで表示)、motor(直流サーボモータ)、tank(1タンク)、lin(線形化)、pole(s平面で極をドラッグ→波形。`_cx.js` を使う)、pfd(部分分数を1項ずつ足す)、ode(微分方程式をラプラス変換で1段ずつ解く)、elem(6つの基本要素)、blk(ブロック線図の直列・並列)。
@@ -83,7 +83,7 @@ SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支�
 - **第5回**(解答版): 重複順列・順序分割のまとめ、₃H₅=21、x+y+z=4 の解15、問1〜7(a+b+c+d=8→165、≤8→495、正整数→36、下限つき→78、階段15段→987(フィボナッチ)、2段3段→12、1・2・3段→274)。ラボ案: 階段(フィボナッチとパスカルの斜め和)。
 - 残り2科目の資料が届いたら、同じ型で追加(新しい `ST.LAB_GROUPS`、コース、色 `--cN` をライト/ダークの3か所)。
 - 「練習問題」を、各回のまとめクイズ(`ST.QUIZ`)にも足す。クイズ画面の自動問題(用語の説明→名前)は、数学では不自然なので、必要なら直す。
-- 出典の `url` は今は仮にリポジトリのURL(`js/data/sources.js` の im1, im2)。授業資料のファイル名・回・教科書ページで出す形のまま。公開前に、先生の了承の確認を SeEd に伝える。
+- 授業資料の出典(im1〜4、ce1〜7)は、リンクを付けず、回の名前だけを表示する(資料へのリンク・ファイルは公開物に入れない)。
 
 ## SeEd の確認待ち
 - 私(Claude)が解いた解説を載せた箇所(第1回の4性質の証明、性質②の帰納法、⑤、⑥など)が、授業の解き方と食い違わないか。

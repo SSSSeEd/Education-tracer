@@ -38,7 +38,7 @@ window.ST = window.ST || {};
     <dl>${p.says ? `<dt>表していること</dt><dd>${ST.md(p.says)}</dd>` : ""}${p.meaning ? `<dt>意味(何を数えている?)</dt><dd>${ST.md(p.meaning)}</dd>` : ""}</dl></div>`;
 
   /* ---------- Sources ---------- */
-  ST.srcList = keys => `<ul class="sources">${keys.filter(k => ST.SRC[k]).map(k => { const s = ST.SRC[k]; return `<li><span class="org">${ST.esc(s.org)}</span><a href="${ST.esc(s.url)}" target="_blank" rel="noopener">${ST.esc(s.label)}</a></li>`; }).join("")}</ul>`;
+  ST.srcList = keys => `<ul class="sources">${keys.filter(k => ST.SRC[k]).map(k => { const s = ST.SRC[k]; return `<li><span class="org">${ST.esc(s.org)}</span>${s.url ? `<a href="${ST.esc(s.url)}" target="_blank" rel="noopener">${ST.esc(s.label)}</a>` : `<span>${ST.esc(s.label)}</span>`}</li>`; }).join("")}</ul>`;
 
   /* Oldest check date among the given sources (falls back to the site-wide date). */
   ST.checkedOf = keys => (keys || []).map(k => ST.SRC[k] && ST.SRC[k].checked).filter(Boolean).sort()[0] || ST.CHECKED;

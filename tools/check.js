@@ -65,7 +65,7 @@ if (ST && ST.W) {
   (ST.NEWS_STATIC || []).forEach(n => (n.terms || []).forEach(t => { if (!ST.TERM[t]) bad(`news ${n.id}: 未登録の用語 ${t}`); }));
   Object.entries(ST.SRC).forEach(([k, s]) => {
     if (!s.org || !s.label) bad(`出典 ${k}: org / label がない`);
-    if (!/^https:\/\/[^\s]+$/.test(s.url || "")) bad(`出典 ${k}: url が https で始まっていない`);
+    if (s.url && !/^https:\/\/[^\s]+$/.test(s.url)) bad(`出典 ${k}: url が https で始まっていない`);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(s.checked || "")) bad(`出典 ${k}: 確認日（checked, YYYY-MM-DD）がない`);
   });
   ST.QUIZ.forEach((q, i) => { if (!q.term) bad(`quiz #${i + 1}: term がない（出典を引けない）`); if (!q.exp) bad(`quiz #${i + 1}: 解説（exp）がない`); });
