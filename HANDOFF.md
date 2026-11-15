@@ -10,6 +10,12 @@
 - 再発防止: `.github/workflows/publish-guard.yml` が、公開枝以外へマージされたPRにコメントし、公開枝へのPRを自動作成する(作れない場合は Settings → Actions → General → 「Allow GitHub Actions to create and approve pull requests」をオン)。PRテンプレートにも base の確認欄あり。
 - 公開元の枝を変えるとき: Pages の設定、`publish-guard.yml` の `PUBLISH_BRANCH`、この節の3か所を同時に直す。
 
+## 教科ごとの小テスト(2026-11-15 追加)
+- 下のタブ「クイズ」(#quiz)で教科(情報数学・応用数学・制御工学・ぜんぶ)を選ぶ。#quiz-<コースid> が1回10問。各コース画面にも「小テストを受ける」ボタン。
+- 出題割合は目安で 基本80%・応用10%・語句10%(`js/data/quiz-app.js` の `ST.QUIZ_MIX`)。基本=ST.QUIZ+各レッスンの練習問題、応用=`ST.QUIZ_APP`(kind:"app"、計23問を新規作成。Claudeが作った・SeEd確認待ち)、語句=用語の説明→名前(自動)。足りない種類は基本で補う。
+- 教科は用語の cat から決める(`ST.CAT_COURSE`)。新しい教科を足すときはここに cat→コースid を追加し、応用問題も足す。
+- sw.js の CACHE を v14 に。
+
 ## これは何か
 SeEd(日本語、日本時間、スマホで斜め読み)の学校の学習支援サイト。security-tracer と同じ作り(静的サイト・ビルドなし・素のJS・グローバル名前空間 `ST`・iPhone幅390px基準)で、授業資料を「**説明 → アニメーション(ラボ) → 問題演習**」の順で学べるようにする。まず自分専用(noindex)。いずれクラス内に公開する予定。
 - 構成・スキーマ・デザインの正本は、Vault の `Knowledge\security-tracer-manual\`(README と 01〜06。届くときだけ読む)と、security-tracer リポジトリ。ここでは差分だけ書く。
