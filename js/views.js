@@ -106,6 +106,7 @@
     const c = ST.COURSE[id] || ST.COURSES[0];
     v.innerHTML = `<a href="#courses" style="font-size:14px">‹ コース一覧</a>
       <div class="page-h" style="--cc:${c.color}"><div class="eyebrow" style="color:${c.color}">COURSE ${c.n}</div><h1>${esc(c.title)}</h1><div class="course-lead"><div class="eyebrow" style="color:${c.color}">このコースで学ぶこと</div><p>${esc(c.desc)}</p></div><a href="#tree">スキルツリーで見る ›</a></div>
+      <a class="btn primary" href="#quiz-${c.id}" style="display:inline-block;margin:0 0 12px">小テストを受ける ›</a>
       <div class="card reading" style="--cc:${c.color}"><div class="line-list">${c.lessons.map((l, i) => `<a href="#l-${l.id}"><span class="dot ${ST.P.lessons[l.id] ? "on" : ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? "locked" : ""}"></span><div><div class="t">${i + 1}. ${esc(l.title)}</div><div class="s">約${l.min}分${l.blocks.filter(b => b.w).length ? " · 図解 " + l.blocks.filter(b => b.w).length + "つ" : ""}${ST.P.lessons[l.id] ? " · 完了" : ""}${ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? " · 🔒 先に" + ST.missingReqs(l.id).map(r => "「" + esc(ST.LESSON[r].title) + "」").join("") : ""}</div></div></a>`).join("")}</div></div>`;
   });
 
@@ -233,31 +234,58 @@
       </article>`;
   });
 
-  /* ---------- Quiz ---------- */
-  let quiz = null;
-  const buildQuiz = () => {
-    const auto = ST.TERMS.map(t => {
-      const pool = ST.shuffle(ST.TERMS.filter(o => o.id !== t.id && o.cat === t.cat));
+  /* ---------- Quiz (per subject: #quiz picks a subject, #quiz-<course id> runs it; #quiz-all mixes every subject) ---------- */
+  const quizzes = {};
+  const KIND = { basic: "基本", app: "応用", word: "語句" };
+  const stripRefs = s => s.replace(/\[\[([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g, (m, i) => ST.TERM[i] ? ST.TERM[i].name : i);
+  /* course id of a term (by its category); "all" matches every subject */
+  const courseOfTerm = id => ST.CAT_COURSE[(ST.TERM[id] || {}).cat];
+  const quizPool = cid => {
+    const inScope = id => cid === "all" || courseOfTerm(id) === cid;
+    const terms = ST.TERMS.filter(t => inScope(t.id));
+    const word = terms.map(t => {
+      const pool = ST.shuffle(terms.filter(o => o.id !== t.id && o.cat === t.cat));
       const others = pool.slice(0, 3); for (const o of ST.shuffle(ST.TERMS)) { if (others.length >= 3) break; if (o.id !== t.id && !others.includes(o)) others.push(o); }
-      return { q: `次の説明に当てはまる用語は？\n「${t.summary.replace(/\[\[([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g, (m, i) => ST.TERM[i] ? ST.TERM[i].name : i)}」`, a: [t.name, ...others.map(o => o.name)], term: t.id, exp: t.how.replace(/\[\[([a-z0-9-]+)(?:\|[^\]]+)?\]\]/g, (m, i) => ST.TERM[i] ? ST.TERM[i].name : i) };
+      return { kind: "word", q: `次の説明に当てはまる用語は？\n「${stripRefs(t.summary)}」`, a: [t.name, ...others.map(o => o.name)], term: t.id, exp: stripRefs(t.how) };
     });
-    const all = [...ST.QUIZ, ...auto].map(x => ({ ...x, w: ST.mastery(x.term) + Math.random() * 1.5 }));
-    all.sort((a, b) => a.w - b.w);
-    return all.slice(0, 10).map(x => ({ ...x, order: ST.shuffle(x.a.map((_, i) => i)) }));
+    const written = ST.QUIZ.filter(x => inScope(x.term)).map(x => ({ ...x, kind: x.kind || "basic" }));
+    /* the practice questions inside each lesson are 基本問題 too */
+    const lessonEx = ST.COURSES.filter(c => cid === "all" || c.id === cid).flatMap(c => c.lessons.flatMap(l => l.blocks.filter(b => b.ex && ST.TERM[b.ex.term]).map(b => ({ ...b.ex, kind: "basic" }))));
+    return { basic: [...written.filter(x => x.kind === "basic"), ...lessonEx], app: written.filter(x => x.kind === "app"), word };
   };
-  ST.view("quiz", v => {
-    if (!quiz || quiz.finished) quiz = { items: buildQuiz(), i: 0, score: 0, picked: null, finished: false };
+  /* Draw `size` questions in roughly the ST.QUIZ_MIX ratio; weak terms come first. If one kind runs short, 基本 fills in. */
+  const buildQuiz = cid => {
+    const mix = ST.QUIZ_MIX, size = mix.size, pool = quizPool(cid);
+    const pick = (list, n) => list.map(x => ({ ...x, w: ST.mastery(x.term) + Math.random() * 1.5 })).sort((a, b) => a.w - b.w).slice(0, n);
+    const nApp = Math.min(pool.app.length, Math.max(mix.app > 0 ? 1 : 0, Math.round(size * mix.app)));
+    const nWord = Math.min(pool.word.length, Math.max(mix.word > 0 ? 1 : 0, Math.round(size * mix.word)));
+    const basic = pick(pool.basic, size - nApp - nWord);
+    const items = [...basic, ...pick(pool.app, nApp), ...pick(pool.word, nWord)];
+    return ST.shuffle(items).map(x => ({ ...x, order: ST.shuffle(x.a.map((_, i) => i)) }));
+  };
+  const quizCourses = () => [...ST.COURSES.map(c => ({ id: c.id, title: c.title, color: c.color })), { id: "all", title: "ぜんぶ", color: "var(--accent)" }];
+  ST.view("quizhome", v => {
+    v.innerHTML = `<div class="page-h"><div class="eyebrow">Quiz</div><h1>小テスト</h1><p class="lead">教科を選んでください。1回10問（基本問題が中心、応用・語句を少し）。間違えた用語ほど先に出ます。</p></div>
+      <div class="list">${quizCourses().map(c => { const p = quizPool(c.id); return `<a class="row" href="#quiz-${c.id}" style="--cc:${c.color}"><div class="body"><div class="t">${esc(c.title)}</div><div class="s">基本 ${p.basic.length}・応用 ${p.app.length}・語句 ${p.word.length} 問から出題</div></div></a>`; }).join("")}</div>`;
+  });
+  ST.view("quiz", (v, cid) => {
+    const course = quizCourses().find(c => c.id === cid);
+    if (!course) return ST.views.quizhome(v);
+    const title = course.title;
+    let quiz = quizzes[cid];
+    if (!quiz || quiz.finished) quiz = quizzes[cid] = { items: buildQuiz(cid), i: 0, score: 0, picked: null, finished: false, byKind: {} };
     const draw = () => {
       if (quiz.finished) {
-        v.innerHTML = `<div class="page-h"><div class="eyebrow">Quiz</div><h1>結果</h1></div><div class="card"><div class="stat" style="border:0;padding:0"><b>${quiz.score}<span> / ${quiz.items.length}</span></b><span>正解</span></div>
-          <p class="lead">間違えた用語ほど、次回のクイズで先に出題されます。</p><div class="list">${[...new Set(quiz.items.map(x => x.term))].map(id => `<a class="row" href="#term-${id}"><div class="body"><div class="t">${esc(ST.TERM[id].name)}</div></div>${ST.masteryDots(id)}</a>`).join("")}</div>
+        const kinds = Object.keys(KIND).filter(k => quiz.byKind[k]).map(k => `${KIND[k]} ${quiz.byKind[k].c}/${quiz.byKind[k].n}`).join(" · ");
+        v.innerHTML = `<a href="#quiz" style="font-size:14px">‹ 教科を選ぶ</a><div class="page-h"><div class="eyebrow">Quiz · ${esc(title)}</div><h1>結果</h1></div><div class="card"><div class="stat" style="border:0;padding:0"><b>${quiz.score}<span> / ${quiz.items.length}</span></b><span>正解</span></div>
+          <p class="lead">${kinds}<br>間違えた用語ほど、次回の小テストで先に出題されます。</p><div class="list">${[...new Set(quiz.items.map(x => x.term))].map(id => `<a class="row" href="#term-${id}"><div class="body"><div class="t">${esc(ST.TERM[id].name)}</div></div>${ST.masteryDots(id)}</a>`).join("")}</div>
           <div class="btns" style="margin-top:12px"><button class="btn primary" type="button" data-again>もう一度</button></div></div>`;
-        v.querySelector("[data-again]").onclick = () => { quiz = null; ST.refresh(); };
+        v.querySelector("[data-again]").onclick = () => { delete quizzes[cid]; ST.refresh(); };
         return;
       }
       const it = quiz.items[quiz.i], t = ST.TERM[it.term];
-      v.innerHTML = `<div class="page-h"><div class="eyebrow">Quiz</div><h1>理解度チェック</h1></div>
-        <div class="card reading" style="width:100%"><div class="q-meta"><span class="date">Q${quiz.i + 1} / ${quiz.items.length}</span><span class="chip">${esc(t.name)}</span></div>
+      v.innerHTML = `<a href="#quiz" style="font-size:14px">‹ 教科を選ぶ</a><div class="page-h"><div class="eyebrow">Quiz · ${esc(title)}</div><h1>小テスト</h1></div>
+        <div class="card reading" style="width:100%"><div class="q-meta"><span class="date">Q${quiz.i + 1} / ${quiz.items.length}</span><span class="chip">${KIND[it.kind]}</span><span class="chip">${esc(t.name)}</span></div>
         <p class="q-text">${md(it.q)}</p><div class="q-opts">${it.order.map(i => `<button type="button" data-i="${i}">${md(it.a[i])}</button>`).join("")}</div><div data-exp></div></div>`;
       ST.$$("[data-i]", v).forEach(b => b.onclick = () => answer(+b.dataset.i));
       if (quiz.picked !== null) show();
@@ -265,6 +293,7 @@
     const answer = i => {
       if (quiz.picked !== null) return;
       const it = quiz.items[quiz.i]; quiz.picked = i; const ok = i === 0; if (ok) quiz.score++;
+      const bk = quiz.byKind[it.kind] = quiz.byKind[it.kind] || { c: 0, n: 0 }; bk.n++; if (ok) bk.c++;
       const st = ST.termStat(it.term); ok ? st.c = (st.c || 0) + 1 : st.w = (st.w || 0) + 1; ST.P.terms[it.term] = st;
       ST.P.quiz.answered++; if (ok) ST.P.quiz.correct++; ST.touchStreak(); ST.save(); show();
     };
@@ -288,5 +317,6 @@
   ST.route("lab-", "labitem", "lab");
   ST.route("terms", "terms", "terms");
   ST.route("term-", "term", "terms");
-  ST.route("quiz", "quiz", "quiz");
+  ST.route("quiz", "quizhome", "quiz");
+  ST.route("quiz-", "quiz", "quiz");
 })(window.ST);
