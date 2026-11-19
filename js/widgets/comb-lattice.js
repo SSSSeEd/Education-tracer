@@ -15,7 +15,7 @@
     tag: "演習7",
     formula: "$S\\to T = C(10,6) = 210 \\quad A$ を通る $= C(6,2) \\times C(4,2) = 90$",
     says: "最短の道は、右に6回・下に4回の合計10歩。10歩のうち、どの6歩を「右」にするかを選べば道が1つ決まります。",
-    meaning: "資料の例では、右にする歩が {1,3,5,8,9,10} 番目の道です。A を通る道は、S→A(右4・下2)の選び方と A→T(右2・下2)の選び方の掛け算になります。",
+    meaning: "資料の例では、右にする歩が {1,3,5,8,9,10} 番目の道です。A を通る道は、$S\\to A$(右4・下2)の選び方と $A\\to T$(右2・下2)の選び方の掛け算になります。",
     mount(el) {
       let path = "RDRDRDDRRR", only = "all", alive = true, busy = false, run = null;
       const list = () => only === "A" ? VIA : PATHS;

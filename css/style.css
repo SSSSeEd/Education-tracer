@@ -529,3 +529,4 @@ nav.tabs a[aria-current="page"] svg{stroke-width:2.2}
 .fb textarea.input{font-family:inherit;font-size:16px;line-height:1.6}
 .fb-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .fb-msg{margin:0;min-height:1.4em}
+.eyebrow .tex,.eyebrow .katex{text-transform:none}

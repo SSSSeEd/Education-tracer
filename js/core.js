@@ -139,7 +139,7 @@ window.ST = window.ST || {};
   ST.mountWidget = (host, name, opts) => {
     const def = ST.W[name];
     if (!def) { host.innerHTML = `<p class="empty">ウィジェット「${ST.esc(name)}」は準備中です。</p>`; return; }
-    host.innerHTML = `<div class="bench"><div class="bench-h"><span class="led"></span><span class="eyebrow">${ST.esc((opts && opts.title) || def.title)}</span>${def.motion ? `<button type="button" class="chip" data-motion title="パケットの動きの速さを切り替える">${ST.MOTION_LABEL[ST.motion]}</button>` : ""}${def.group ? `<a class="chip" href="#lab-${name}" title="単独で開く">LAB</a>` : ""}</div><div class="bench-b"></div></div>`;
+    host.innerHTML = `<div class="bench"><div class="bench-h"><span class="led"></span><span class="eyebrow">${ST.md((opts && opts.title) || def.title)}</span>${def.motion ? `<button type="button" class="chip" data-motion title="パケットの動きの速さを切り替える">${ST.MOTION_LABEL[ST.motion]}</button>` : ""}${def.group ? `<a class="chip" href="#lab-${name}" title="単独で開く">LAB</a>` : ""}</div><div class="bench-b"></div></div>`;
     const body = host.querySelector(".bench-b");
     /* A lab can state what it shows before the interactive part: def.formula / def.says / def.meaning. */
     if (def.formula && !(opts && opts.hideProp)) body.parentNode.insertBefore(Object.assign(document.createElement("div"), { innerHTML: ST.propHtml({ tag: def.tag || "この図が表すこと", name: def.name || def.title, formula: def.formula, says: def.says, meaning: def.meaning }) }).firstChild, body);
@@ -148,7 +148,7 @@ window.ST = window.ST || {};
     try {
       const cleanup = def.mount(body, opts || {});
       if (typeof cleanup === "function") live.push(cleanup);
-      if (def.group !== "ctl" && ST.watchTree) live.push(ST.watchTree(body));   // math written as plain Unicode in captions is rendered with KaTeX
+      if (ST.watchTree) live.push(ST.watchTree(body));   // math written as plain Unicode in captions is rendered with KaTeX
     } catch (e) { body.innerHTML = `<p class="empty">表示できませんでした: ${ST.esc(e.message)}</p>`; console.error(e); }
   };
   ST.mountAll = root => ST.$$("[data-widget]", root).forEach(h => {

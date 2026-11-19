@@ -6,7 +6,7 @@
 
   ST.widget("cplane", {
     title: "複素平面:複素数は平面の点(矢印)。足し算は矢印をつなぐ",
-    group: "cx", name: "複素平面と足し算", desc: "z = x + yi は点 (x, y)。和・差・共役・絶対値を動かして見る", order: 1,
+    group: "cx", name: "複素平面と足し算", desc: "$z = x + yi$ は点 $(x, y)$。和・差・共役・絶対値を動かして見る", order: 1,
     tag: "複素平面",
     formula: "$z = x + yi$ ⟷ 点 $(x, y) \\quad |z| = \\sqrt{x^{2}+y^{2}} \\quad \\bar{z} = x - yi$",
     says: "複素数 $x+yi$ を、横が x(実部)・縦が y(虚部)の平面の点として表します。原点からの矢印(ベクトル)とも同じです。",

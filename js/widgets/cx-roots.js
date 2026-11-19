@@ -6,7 +6,7 @@
 
   ST.widget("croots", {
     title: "累乗とn乗根:角度が n 倍になる、根は正 n 角形に並ぶ",
-    group: "cx", name: "累乗とn乗根", desc: "zⁿ は長さがn乗・角度がn倍。n乗根は円周上に等間隔に並ぶ", order: 3,
+    group: "cx", name: "累乗とn乗根", desc: "$z^{n}$ は長さがn乗・角度がn倍。n乗根は円周上に等間隔に並ぶ", order: 3,
     tag: "ド・モアブルの公式",
     formula: "$z^{n} = r^{n}(\\cos n\\theta + i \\sin n\\theta )$",
     says: "$z = r(\\cos \\theta + i \\sin \\theta )$ のとき、n 乗すると長さは $r^{n}$、角度は $n\\theta$ になります。逆に n 乗根は n 個あり、角度が $\\frac{2\\pi }{n}$ ずつずれて並びます。",

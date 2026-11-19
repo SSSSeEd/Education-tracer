@@ -102,7 +102,7 @@
     group: "ctl", name: "運動方程式を立てる手順", desc: "向きを決めて、力や電圧を1つずつ描き、合計をおいて式を組み上げる(機械・電気・回転・水位)", order: 2.5, tag: "モデリング",
     formula: "$\\text{(慣性)} + \\text{(摩擦)} + \\text{(復元)} = \\text{(入力)}$",
     says: "どの分野でも、①正の向きを決める ②働く力(電圧・流量)を1つずつ、向きと符号をセットで書く ③合計をおく、の順で式を立てます。時間の動きはここでは見ません。",
-    meaning: "矢印の向きと符号がそろえば、あとは足すだけです。機械の M・C・K は、電気の L・R・1/C、回転の J・C・K と1対1で対応します。",
+    meaning: "矢印の向きと符号がそろえば、あとは足すだけです。機械の M・C・K は、電気の L・R・$\\frac{1}{C}$、回転の J・C・K と1対1で対応します。",
     mount(el) {
       let key = "mech", step = 0;
       el.innerHTML = `<div><p class="lab-label">どのモデル?</p>${ST.segHtml("model", Object.entries(MODELS).map(([k, m]) => [k, m.name.replace(/\(.*\)/, "")]), key)}</div>

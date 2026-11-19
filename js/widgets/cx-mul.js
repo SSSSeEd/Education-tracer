@@ -6,7 +6,7 @@
 
   ST.widget("cmul", {
     title: "掛け算は「拡大」と「回転」:長さは掛け算、角度は足し算",
-    group: "cx", name: "掛け算は拡大と回転", desc: "z に α を掛けると、|α| 倍に拡大して arg α だけ回転する", order: 2,
+    group: "cx", name: "掛け算は拡大と回転", desc: "z に $\\alpha$ を掛けると、$|\\alpha |$ 倍に拡大して $\\arg \\alpha$ だけ回転する", order: 2,
     tag: "極形式と積",
     formula: "$|z\\alpha | = |z|\\cdot |\\alpha | \\quad \\arg (z\\alpha ) = \\arg z + \\arg \\alpha$",
     says: "複素数の掛け算は、長さを掛け合わせ、角度(偏角)を足し合わせたものです。割り算は長さを割り、角度を引きます。",
