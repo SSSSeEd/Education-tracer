@@ -16,11 +16,11 @@
   const END = [1, 1];
 
   ST.widget("csum", {
-    title: "区分求積法:細かく刻んで「値×幅」を足すと積分になる",
+    title: "区分求積法:細かく刻んで「値 $\\times$ 幅」を足すと積分になる",
     group: "cx", name: "区分求積法", desc: "区間・道を n 個に刻んで足す。n を増やすと積分の値に近づく", order: 8,
     tag: "区分求積法",
     formula: "$\\int f(x)dx \\approx \\Sigma f(x_{k})\\cdot \\Delta x \\quad \\int f(z)dz \\approx \\Sigma f(z_{k})\\cdot \\Delta z$",
-    says: "積分は、区間(または道)を細かく刻んで、「その場所の値 × 刻みの幅」を足し合わせた和の極限です。複素数の積分でも同じで、幅 $\\Delta z$ が複素数(矢印)になるところだけが違います。",
+    says: "積分は、区間(または道)を細かく刻んで、「その場所の値 $\\times$ 刻みの幅」を足し合わせた和の極限です。複素数の積分でも同じで、幅 $\\Delta z$ が複素数(矢印)になるところだけが違います。",
     meaning: "実数のときの長方形は、複素数では「矢印 $f(z_{k})\\Delta z$」になります。n 個の矢印を先頭と末尾でつなぐと折れ線になり、n を増やすと、その終点が積分の値に近づきます。",
     mount(el) {
       let mode = "real", rk = "sq", ck = "sq", rule = "L", n = 6;

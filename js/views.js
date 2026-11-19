@@ -14,7 +14,7 @@
   const lessonsUsing = w => Object.values(ST.LESSON).filter(l => l.blocks.some(b => b.w === w));
   const allLessons = () => ST.COURSES.flatMap(c => c.lessons);
   const nextLesson = () => allLessons().find(l => ST.lessonState(l.id) === "open") || allLessons().find(l => !ST.P.lessons[l.id]) || allLessons()[0];
-  const lessonLink = id => { const x = ST.LESSON[id]; return `<a class="row" href="#l-${id}" style="--cc:${ST.COURSE[x.course].color}"><span class="tree-dot ${ST.lessonState(id)}"></span><div class="body"><div class="t">${esc(x.title)}</div><div class="s">${esc(ST.COURSE[x.course].title)} · 約${x.min}分</div></div></a>`; };
+  const lessonLink = id => { const x = ST.LESSON[id]; return `<a class="row" href="#l-${id}" style="--cc:${ST.COURSE[x.course].color}"><span class="tree-dot ${ST.lessonState(id)}"></span><div class="body"><div class="t">${md(x.title)}</div><div class="s">${md(ST.COURSE[x.course].title)} · 約${x.min}分</div></div></a>`; };
   /* Gate shown in place of a locked lesson or lab. key goes into ST.peek when the reader opens it anyway (soft lock). */
   const gate = (key, what, ids) => `<div class="card gate"><div class="eyebrow">🔒 まだ開いていません</div>
     <p>${what}</p><div class="list">${ids.map(lessonLink).join("")}</div>
@@ -36,10 +36,10 @@
     v.innerHTML = `
     <section class="today card" style="--cc:${c.color}">
       <div class="eyebrow">今日やること · 約${nx.min}分</div>
-      <h1>${esc(nx.title)}</h1>
-      <div class="chips">${due.length ? `<span class="chip warn">復習 ${due.length}件あり</span>` : ""}<span class="chip">${esc(c.title)}</span></div>
+      <h1>${md(nx.title)}</h1>
+      <div class="chips">${due.length ? `<span class="chip warn">復習 ${due.length}件あり</span>` : ""}<span class="chip">${md(c.title)}</span></div>
       <a class="btn primary big" href="#l-${nx.id}">${done ? "続きから" : "はじめる"} ›</a>
-      ${nextAfter ? `<p class="cap">終わると「${esc(nextAfter.title)}」が開きます</p>` : ""}
+      ${nextAfter ? `<p class="cap">終わると「${md(nextAfter.title)}」が開きます</p>` : ""}
     </section>
     <div class="stats">
       <div class="stat"><b>${done}<span>/${L.length}</span></b><span>レッスン</span></div>
@@ -50,11 +50,11 @@
       ${due.length ? `<div class="card">   <!-- 1件以上のときだけ、枠を出す -->
       <div class="section-h"><h2>今日の復習 ${due.length}件</h2></div>   <!-- 件数は見出しの中に入れる -->
       <div class="list">${due.map(id => `<a class="row" href="#l-${id}">
-      <div>${esc(ST.LESSON[id].title)}</div></a>`).join("")}</div></div>   <!-- idごとに1行 -->
+      <div>${md(ST.LESSON[id].title)}</div></a>`).join("")}</div></div>   <!-- idごとに1行 -->
       </div>` : ""}
       ${soon.length ? `<div class="card">
         <div class="section-h"><h2>もうすぐ復習</h2></div>
-        <div class="list">${soon.map(id => `<a class="row" href="#l-${id}"><div class="body"><div class="t">${esc(ST.LESSON[id].title)}</div><div class="s">あと${ST.daysUntilReview(ST.P.lessons[id], 0, Date.now())}日</div></div></a>`).join("")}</div>
+        <div class="list">${soon.map(id => `<a class="row" href="#l-${id}"><div class="body"><div class="t">${md(ST.LESSON[id].title)}</div><div class="s">あと${ST.daysUntilReview(ST.P.lessons[id], 0, Date.now())}日</div></div></a>`).join("")}</div>
       </div>` : ""}
     <section class="col">
       <div class="section-h"><h2>コース</h2><a href="#courses">すべて</a></div>
@@ -63,9 +63,9 @@
     <p class="cap">Education Tracer は、授業の内容を「説明 → アニメーション → 問題演習」の順で学ぶ場所です。${ST.COURSES.length}のコースと${Object.keys(ST.LAB).length}個のアニメーション（図解ラボ）があり、解説には授業資料への出典を付けています。</p>
     <section class="grid2">
       <div class="card"><div class="section-h"><h2>注目のラボ</h2><a href="#lab">すべて</a></div>
-        <div class="list">${featured.map(id => { const l = ST.LAB[id]; return `<a class="row" href="#lab-${id}"><div class="body"><div class="t">${esc(l.n)}</div><div class="s">${esc(l.d)}</div></div><span class="chip" style="color:${l.color}">${esc(l.g)}</span></a>`; }).join("")}</div></div>
+        <div class="list">${featured.map(id => { const l = ST.LAB[id]; return `<a class="row" href="#lab-${id}"><div class="body"><div class="t">${md(l.n)}</div><div class="s">${md(l.d)}</div></div><span class="chip" style="color:${l.color}">${esc(l.g)}</span></a>`; }).join("")}</div></div>
       <div class="col">
-        <div class="card"><div class="eyebrow">今日の用語</div><a class="row" href="#term-${today.id}" style="border:0"><div class="body"><div class="term-name"><span class="t">${esc(today.name)}</span><span class="en">${esc(today.en)}</span></div><div class="s">${md(today.summary)}</div></div></a></div>
+        <div class="card"><div class="eyebrow">今日の用語</div><a class="row" href="#term-${today.id}" style="border:0"><div class="body"><div class="term-name"><span class="t">${md(today.name)}</span><span class="en">${esc(today.en)}</span></div><div class="s">${md(today.summary)}</div></div></a></div>
       </div>
     </section>
     <section class="card" data-handoff style="display:grid;gap:8px">
@@ -93,8 +93,8 @@
   });
   const courseCard = c => {
     const n = c.lessons.length, d = c.lessons.filter(l => ST.P.lessons[l.id]).length;
-    return `<a class="card course" href="#course-${c.id}" style="--cc:${c.color}"><span class="bar"></span><div class="num">COURSE ${c.n} · ${d}/${n}</div><h3>${esc(c.title)}</h3><div class="s">${esc(c.desc)}</div>
-      <div class="stations">${c.lessons.map((l, i) => `${i ? "<b></b>" : ""}<i class="${ST.P.lessons[l.id] ? "on" : ""}" title="${esc(l.title)}"></i>`).join("")}</div></a>`;
+    return `<a class="card course" href="#course-${c.id}" style="--cc:${c.color}"><span class="bar"></span><div class="num">COURSE ${c.n} · ${d}/${n}</div><h3>${md(c.title)}</h3><div class="s">${md(c.desc)}</div>
+      <div class="stations">${c.lessons.map((l, i) => `${i ? "<b></b>" : ""}<i class="${ST.P.lessons[l.id] ? "on" : ""}" title="${esc(l.title).replace(/\$/g, "")}"></i>`).join("")}</div></a>`;
   };
 
   /* ---------- Courses ---------- */
@@ -105,9 +105,9 @@
   ST.view("course", (v, id) => {
     const c = ST.COURSE[id] || ST.COURSES[0];
     v.innerHTML = `<a href="#courses" style="font-size:14px">‹ コース一覧</a>
-      <div class="page-h" style="--cc:${c.color}"><div class="eyebrow" style="color:${c.color}">COURSE ${c.n}</div><h1>${esc(c.title)}</h1><div class="course-lead"><div class="eyebrow" style="color:${c.color}">このコースで学ぶこと</div><p>${esc(c.desc)}</p></div><a href="#tree">スキルツリーで見る ›</a></div>
+      <div class="page-h" style="--cc:${c.color}"><div class="eyebrow" style="color:${c.color}">COURSE ${c.n}</div><h1>${md(c.title)}</h1><div class="course-lead"><div class="eyebrow" style="color:${c.color}">このコースで学ぶこと</div><p>${md(c.desc)}</p></div><a href="#tree">スキルツリーで見る ›</a></div>
       <a class="btn primary" href="#quiz-${c.id}" style="display:inline-block;margin:0 0 12px">小テストを受ける ›</a>
-      <div class="card reading" style="--cc:${c.color}"><div class="line-list">${c.lessons.map((l, i) => `<a href="#l-${l.id}"><span class="dot ${ST.P.lessons[l.id] ? "on" : ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? "locked" : ""}"></span><div><div class="t">${i + 1}. ${esc(l.title)}</div><div class="s">約${l.min}分${l.blocks.filter(b => b.w).length ? " · 図解 " + l.blocks.filter(b => b.w).length + "つ" : ""}${ST.P.lessons[l.id] ? " · 完了" : ""}${ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? " · 🔒 先に" + ST.missingReqs(l.id).map(r => "「" + esc(ST.LESSON[r].title) + "」").join("") : ""}</div></div></a>`).join("")}</div></div>`;
+      <div class="card reading" style="--cc:${c.color}"><div class="line-list">${c.lessons.map((l, i) => `<a href="#l-${l.id}"><span class="dot ${ST.P.lessons[l.id] ? "on" : ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? "locked" : ""}"></span><div><div class="t">${i + 1}. ${md(l.title)}</div><div class="s">約${l.min}分${l.blocks.filter(b => b.w).length ? " · 図解 " + l.blocks.filter(b => b.w).length + "つ" : ""}${ST.P.lessons[l.id] ? " · 完了" : ""}${ST.lessonState(l.id) === "locked" && ST.LOCK !== "off" ? " · 🔒 先に" + ST.missingReqs(l.id).map(r => "「" + md(ST.LESSON[r].title) + "」").join("") : ""}</div></div></a>`).join("")}</div></div>`;
   });
 
   /* ---------- Lesson ---------- */
@@ -128,17 +128,17 @@
     if (buf) html += `<div class="prose">${buf}</div>`;
     const miss = ST.missingReqs(l.id), locked = !ST.P.lessons[l.id] && miss.length && ST.gated("l-" + l.id);
     if (locked) html = gate("l-" + l.id, "このレッスンは、次のレッスンの知識を前提にしています。先に読むと理解しやすくなります。", miss);
-    else if (ST.LOCK === "off" && miss.length) html = `<p class="cap">おすすめの順番：先に ${miss.map(r => `<a href="#l-${r}">${esc(ST.LESSON[r].title)}</a>`).join("・")}</p>` + html;
+    else if (ST.LOCK === "off" && miss.length) html = `<p class="cap">おすすめの順番：先に ${miss.map(r => `<a href="#l-${r}">${md(ST.LESSON[r].title)}</a>`).join("・")}</p>` + html;
     v.innerHTML = `<article class="lesson" style="--cc:${c.color}">
-      <a href="#course-${c.id}" style="font-size:14px">‹ ${esc(c.title)}</a>
-      <header><div class="eyebrow" style="color:${c.color}">COURSE ${c.n} · LESSON ${l.idx + 1}/${c.lessons.length} · 約${l.min}分</div><h1>${esc(l.title)}</h1></header>
+      <a href="#course-${c.id}" style="font-size:14px">‹ ${md(c.title)}</a>
+      <header><div class="eyebrow" style="color:${c.color}">COURSE ${c.n} · LESSON ${l.idx + 1}/${c.lessons.length} · 約${l.min}分</div><h1>${md(l.title)}</h1></header>
       ${lead ? `<div class="lesson-lead"><div class="eyebrow" style="color:${c.color}">${lead.label}</div><p>${md(lead.text)}</p></div>` : ""}
       ${html}
-      <div class="card"><div class="eyebrow">関連する用語</div><div class="filters" style="margin-top:8px">${l.terms.filter(t => ST.TERM[t]).map(t => `<a class="tag" href="#term-${t}">${esc(ST.TERM[t].name)}</a>`).join("")}</div>
+      <div class="card"><div class="eyebrow">関連する用語</div><div class="filters" style="margin-top:8px">${l.terms.filter(t => ST.TERM[t]).map(t => `<a class="tag" href="#term-${t}">${md(ST.TERM[t].name)}</a>`).join("")}</div>
         <div class="eyebrow" style="margin-top:14px;margin-bottom:6px">出典</div>${ST.srcList(l.src)}
         ${(l.practice || []).length ? `<div class="eyebrow" style="margin-top:14px;margin-bottom:6px">実践・外部教材</div>${ST.P.lessons[l.id] || ST.LOCK === "off" ? ST.srcList(l.practice) : `<p class="cap" style="margin:0">🔒 このレッスンを完了すると、演習へのリンク（${l.practice.length}件）が開きます。座学のあとに手を動かす順番にしています。</p>`}<p class="cap" style="margin:6px 0 0">練習は、用意された演習環境の中だけで行います（<a href="#l-law-uaa">不正アクセス禁止法</a>）。外部サイトの内容は転載せず、リンクだけを案内しています。</p>` : ""}
         <p class="verify" style="margin-top:12px">出典確認日 ${ST.checkedOf(l.src.concat(l.practice || []))}。本文はClaudeが出典をもとに作成した解説です。</p></div>
-      <div class="lesson-nav">${prev ? `<a class="btn" href="#l-${prev.id}">‹ ${esc(prev.title)}</a>` : "<span></span>"}<button class="btn primary" type="button" data-done${locked ? " hidden" : ""}>${ST.P.lessons[l.id] ? "完了済み ✓" : "このレッスンを完了"}</button>${next ? `<a class="btn" href="#l-${next.id}">${esc(next.title)} ›</a>` : ""}</div>
+      <div class="lesson-nav">${prev ? `<a class="btn" href="#l-${prev.id}">‹ ${md(prev.title)}</a>` : "<span></span>"}<button class="btn primary" type="button" data-done${locked ? " hidden" : ""}>${ST.P.lessons[l.id] ? "完了済み ✓" : "このレッスンを完了"}</button>${next ? `<a class="btn" href="#l-${next.id}">${md(next.title)} ›</a>` : ""}</div>
     </article>`;
     v.querySelector("[data-done]").onclick = () => { ST.markLesson(l.id); next ? (location.hash = "l-" + next.id) : (location.hash = "course-" + c.id); };
   });
@@ -172,8 +172,8 @@
     const row = (l, i) => {
       const k = st(l), c = ST.COURSE[l.course], miss = ST.missingReqs(l.id);
       const tag = k === "done" ? "読んだ" : k === "due" ? "復習" : k === "locked" ? `あと${miss.length}本` : (i === 0 ? "おすすめ" : "読める");
-      const sub = k === "locked" ? `先に「${miss.map(r => esc(ST.LESSON[r].title)).join("」「")}」を読むと分かりやすい` : k === "due" ? `${esc(c.title)} · 復習の日です` : `${esc(c.title)} · 約${l.min}分`;
-      return `<a class="trow ${k}" href="#l-${l.id}" style="--cc:${c.color}"><span class="ti" aria-hidden="true">${ICON[k]}</span><span class="body"><b>${esc(l.title)}</b><span class="cap">${sub}</span></span><span class="tag">${tag}</span></a>`;
+      const sub = k === "locked" ? `先に「${miss.map(r => md(ST.LESSON[r].title)).join("」「")}」を読むと分かりやすい` : k === "due" ? `${md(c.title)} · 復習の日です` : `${md(c.title)} · 約${l.min}分`;
+      return `<a class="trow ${k}" href="#l-${l.id}" style="--cc:${c.color}"><span class="ti" aria-hidden="true">${ICON[k]}</span><span class="body"><b>${md(l.title)}</b><span class="cap">${sub}</span></span><span class="tag">${tag}</span></a>`;
     };
     const sec = (title, arr, note) => arr.length ? `<section class="tsec"><h2>${title} <span class="mono">${arr.length}</span></h2>${note ? `<p class="cap">${note}</p>` : ""}<div class="card tlist">${arr.map(row).join("")}</div></section>` : "";
     v.innerHTML = `<a href="#courses" style="font-size:14px">‹ コース一覧</a>
@@ -188,17 +188,17 @@
   /* ---------- Lab ---------- */
   ST.view("lab", v => {
     v.innerHTML = `<div class="page-h"><div class="eyebrow">Lab</div><h1>図解ラボ</h1><p class="lead">それぞれ単独で触れる実験台です。レッスンの中にも組み込まれていて、そのレッスンを読むと単独でも開きます。</p></div>
-      ${ST.LABS.map(g => `<section class="col"><div class="section-h"><h2>${esc(g.g)}</h2></div><div class="lab-grid">${g.items.map(([id, n, d]) => `<a class="card lab-card" href="#lab-${id}" style="--cc:${g.color}"><div class="ico" style="color:${g.color}"><b class="mono" style="font-size:12px">${id.slice(0, 3).toUpperCase()}</b></div><b>${!ST.labOpen(id) && ST.LOCK !== "off" ? "🔒 " : ""}${esc(n)}</b><span class="cap">${esc(d)}${ST.P.labs[id] ? " · 済" : ""}${!ST.labOpen(id) && ST.LOCK !== "off" ? " · 「" + esc(ST.labOpeners(id)[0].title) + "」などを読むと開く" : ""}</span></a>`).join("")}</div></section>`).join("")}`;
+      ${ST.LABS.map(g => `<section class="col"><div class="section-h"><h2>${esc(g.g)}</h2></div><div class="lab-grid">${g.items.map(([id, n, d]) => `<a class="card lab-card" href="#lab-${id}" style="--cc:${g.color}"><div class="ico" style="color:${g.color}"><b class="mono" style="font-size:12px">${id.slice(0, 3).toUpperCase()}</b></div><b>${!ST.labOpen(id) && ST.LOCK !== "off" ? "🔒 " : ""}${md(n)}</b><span class="cap">${md(d)}${ST.P.labs[id] ? " · 済" : ""}${!ST.labOpen(id) && ST.LOCK !== "off" ? " · 「" + md(ST.labOpeners(id)[0].title) + "」などを読むと開く" : ""}</span></a>`).join("")}</div></section>`).join("")}`;
   });
   ST.view("labitem", (v, id) => {
     const l = ST.LAB[id]; if (!l) return ST.views.lab(v);
     const ls = lessonsUsing(id), ts = ST.TERMS.filter(t => t.lab === id);
     const order = ST.LABS.flatMap(g => g.items.map(x => x[0])), pos = order.indexOf(id), pv = order[pos - 1], nx = order[pos + 1];
-    const nav = `<div class="lesson-nav lab-nav">${pv ? `<a class="btn" href="#lab-${pv}">‹ ${esc(ST.LAB[pv].n)}</a>` : "<span></span>"}<span class="cap" style="align-self:center">${pos + 1} / ${order.length}</span>${nx ? `<a class="btn" href="#lab-${nx}">${esc(ST.LAB[nx].n)} ›</a>` : "<span></span>"}</div>`;
-    v.innerHTML = `<a href="#lab" style="font-size:14px">‹ 図解ラボ</a><div class="page-h"><div class="eyebrow" style="color:${l.color}">${esc(l.g)}</div><h1>${esc(l.n)}</h1><p class="lead">${esc(l.d)}</p></div>
+    const nav = `<div class="lesson-nav lab-nav">${pv ? `<a class="btn" href="#lab-${pv}">‹ ${md(ST.LAB[pv].n)}</a>` : "<span></span>"}<span class="cap" style="align-self:center">${pos + 1} / ${order.length}</span>${nx ? `<a class="btn" href="#lab-${nx}">${md(ST.LAB[nx].n)} ›</a>` : "<span></span>"}</div>`;
+    v.innerHTML = `<a href="#lab" style="font-size:14px">‹ 図解ラボ</a><div class="page-h"><div class="eyebrow" style="color:${l.color}">${esc(l.g)}</div><h1>${md(l.n)}</h1><p class="lead">${md(l.d)}</p></div>
       ${!ST.labOpen(id) && ST.gated("lab-" + id) ? gate("lab-" + id, "このラボは、次のレッスンのどれかを読むと開きます。", ls.map(x => x.id)) : `${nav}<div data-widget="${id}"></div>${nav}`}
-      <div class="grid2">${ls.length ? `<div class="card"><div class="eyebrow">このラボを使うレッスン</div><div class="list">${ls.map(x => `<a class="row" href="#l-${x.id}"><div class="body"><div class="t">${esc(x.title)}</div><div class="s">${esc(ST.COURSE[x.course].title)}</div></div></a>`).join("")}</div></div>` : ""}
-      ${ts.length ? `<div class="card"><div class="eyebrow">関連する用語</div><div class="list">${ts.map(t => `<a class="row" href="#term-${t.id}"><div class="body"><div class="t">${esc(t.name)}</div><div class="s">${md(t.summary)}</div></div></a>`).join("")}</div></div>` : ""}</div>`;
+      <div class="grid2">${ls.length ? `<div class="card"><div class="eyebrow">このラボを使うレッスン</div><div class="list">${ls.map(x => `<a class="row" href="#l-${x.id}"><div class="body"><div class="t">${md(x.title)}</div><div class="s">${md(ST.COURSE[x.course].title)}</div></div></a>`).join("")}</div></div>` : ""}
+      ${ts.length ? `<div class="card"><div class="eyebrow">関連する用語</div><div class="list">${ts.map(t => `<a class="row" href="#term-${t.id}"><div class="body"><div class="t">${md(t.name)}</div><div class="s">${md(t.summary)}</div></div></a>`).join("")}</div></div>` : ""}</div>`;
   });
 
   /* ---------- Terms ---------- */
@@ -211,7 +211,7 @@
     const draw = () => {
       const q = termFilter.q.trim().toLowerCase();
       const items = ST.TERMS.filter(t => (termFilter.cat === "すべて" || t.cat === termFilter.cat) && (!q || (t.name + t.en + t.summary).toLowerCase().includes(q)));
-      v.querySelector("[data-tl]").innerHTML = items.length ? items.map(t => `<a class="row" href="#term-${t.id}"><div class="body"><div class="term-name"><span class="t">${esc(t.name)}</span><span class="en">${esc(t.en)}</span></div><div class="s">${md(t.summary)}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><span class="chip">${t.cat}</span>${ST.masteryDots(t.id)}</div></a>`).join("") : `<p class="empty">「${esc(termFilter.q)}」に一致する用語はありません。</p>`;
+      v.querySelector("[data-tl]").innerHTML = items.length ? items.map(t => `<a class="row" href="#term-${t.id}"><div class="body"><div class="term-name"><span class="t">${md(t.name)}</span><span class="en">${esc(t.en)}</span></div><div class="s">${md(t.summary)}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><span class="chip">${t.cat}</span>${ST.masteryDots(t.id)}</div></a>`).join("") : `<p class="empty">「${esc(termFilter.q)}」に一致する用語はありません。</p>`;
     };
     v.querySelector("#term-q").oninput = e => { termFilter.q = e.target.value; draw(); };
     ST.$$("[data-cat]", v).forEach(b => b.onclick = () => { termFilter.cat = b.dataset.cat; ST.$$("[data-cat]", v).forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); });
@@ -223,12 +223,12 @@
     const ls = Object.values(ST.LESSON).filter(l => l.terms.includes(t.id));
     v.innerHTML = `<a href="#terms" style="font-size:14px">‹ 用語一覧</a>
       <article class="card detail">
-        <div><div class="eyebrow">${esc(t.cat)} · ${esc(t.en)}</div><h1>${esc(t.name)}</h1><p class="lead" style="color:var(--ink);font-size:16px">${md(t.summary)}</p></div>
+        <div><div class="eyebrow">${esc(t.cat)} · ${esc(t.en)}</div><h1>${md(t.name)}</h1><p class="lead" style="color:var(--ink);font-size:16px">${md(t.summary)}</p></div>
         <section><h2>仕組み</h2><p>${md(t.how)}</p></section>
         <section><h2>危険性</h2><p>${md(t.risk)}</p></section>
         <section><h2>対策</h2><ul>${t.defense.map(d => `<li>${md(d)}</li>`).join("")}</ul></section>
         ${t.lab && ST.LAB[t.lab] ? `<section><h2>図解で確かめる</h2><div data-widget="${t.lab}"></div></section>` : ""}
-        ${ls.length ? `<section><h2>この用語が出てくるレッスン</h2><div class="list">${ls.map(l => `<a class="row" href="#l-${l.id}"><div class="body"><div class="t">${esc(l.title)}</div><div class="s">${esc(ST.COURSE[l.course].title)}</div></div></a>`).join("")}</div></section>` : ""}
+        ${ls.length ? `<section><h2>この用語が出てくるレッスン</h2><div class="list">${ls.map(l => `<a class="row" href="#l-${l.id}"><div class="body"><div class="t">${md(l.title)}</div><div class="s">${md(ST.COURSE[l.course].title)}</div></div></a>`).join("")}</div></section>` : ""}
         <section><h2>出典</h2>${ST.srcList(t.src)}</section>
         <p class="verify">出典確認日 ${ST.checkedOf(t.src)}。解説はClaudeが出典をもとに作成した要約です。正確な内容は出典で確認してください。</p>
       </article>`;
@@ -266,7 +266,7 @@
   const quizCourses = () => [...ST.COURSES.map(c => ({ id: c.id, title: c.title, color: c.color })), { id: "all", title: "ぜんぶ", color: "var(--accent)" }];
   ST.view("quizhome", v => {
     v.innerHTML = `<div class="page-h"><div class="eyebrow">Quiz</div><h1>小テスト</h1><p class="lead">教科を選んでください。1回10問（基本問題が中心、応用・語句を少し）。間違えた用語ほど先に出ます。</p></div>
-      <div class="list">${quizCourses().map(c => { const p = quizPool(c.id); return `<a class="row" href="#quiz-${c.id}" style="--cc:${c.color}"><div class="body"><div class="t">${esc(c.title)}</div><div class="s">基本 ${p.basic.length}・応用 ${p.app.length}・語句 ${p.word.length} 問から出題</div></div></a>`; }).join("")}</div>`;
+      <div class="list">${quizCourses().map(c => { const p = quizPool(c.id); return `<a class="row" href="#quiz-${c.id}" style="--cc:${c.color}"><div class="body"><div class="t">${md(c.title)}</div><div class="s">基本 ${p.basic.length}・応用 ${p.app.length}・語句 ${p.word.length} 問から出題</div></div></a>`; }).join("")}</div>`;
   });
   ST.view("quiz", (v, cid) => {
     const course = quizCourses().find(c => c.id === cid);
@@ -277,15 +277,15 @@
     const draw = () => {
       if (quiz.finished) {
         const kinds = Object.keys(KIND).filter(k => quiz.byKind[k]).map(k => `${KIND[k]} ${quiz.byKind[k].c}/${quiz.byKind[k].n}`).join(" · ");
-        v.innerHTML = `<a href="#quiz" style="font-size:14px">‹ 教科を選ぶ</a><div class="page-h"><div class="eyebrow">Quiz · ${esc(title)}</div><h1>結果</h1></div><div class="card"><div class="stat" style="border:0;padding:0"><b>${quiz.score}<span> / ${quiz.items.length}</span></b><span>正解</span></div>
-          <p class="lead">${kinds}<br>間違えた用語ほど、次回の小テストで先に出題されます。</p><div class="list">${[...new Set(quiz.items.map(x => x.term))].map(id => `<a class="row" href="#term-${id}"><div class="body"><div class="t">${esc(ST.TERM[id].name)}</div></div>${ST.masteryDots(id)}</a>`).join("")}</div>
+        v.innerHTML = `<a href="#quiz" style="font-size:14px">‹ 教科を選ぶ</a><div class="page-h"><div class="eyebrow">Quiz · ${md(title)}</div><h1>結果</h1></div><div class="card"><div class="stat" style="border:0;padding:0"><b>${quiz.score}<span> / ${quiz.items.length}</span></b><span>正解</span></div>
+          <p class="lead">${kinds}<br>間違えた用語ほど、次回の小テストで先に出題されます。</p><div class="list">${[...new Set(quiz.items.map(x => x.term))].map(id => `<a class="row" href="#term-${id}"><div class="body"><div class="t">${md(ST.TERM[id].name)}</div></div>${ST.masteryDots(id)}</a>`).join("")}</div>
           <div class="btns" style="margin-top:12px"><button class="btn primary" type="button" data-again>もう一度</button></div></div>`;
         v.querySelector("[data-again]").onclick = () => { delete quizzes[cid]; ST.refresh(); };
         return;
       }
       const it = quiz.items[quiz.i], t = ST.TERM[it.term];
-      v.innerHTML = `<a href="#quiz" style="font-size:14px">‹ 教科を選ぶ</a><div class="page-h"><div class="eyebrow">Quiz · ${esc(title)}</div><h1>小テスト</h1></div>
-        <div class="card reading" style="width:100%"><div class="q-meta"><span class="date">Q${quiz.i + 1} / ${quiz.items.length}</span><span class="chip">${KIND[it.kind]}</span><span class="chip">${esc(t.name)}</span></div>
+      v.innerHTML = `<a href="#quiz" style="font-size:14px">‹ 教科を選ぶ</a><div class="page-h"><div class="eyebrow">Quiz · ${md(title)}</div><h1>小テスト</h1></div>
+        <div class="card reading" style="width:100%"><div class="q-meta"><span class="date">Q${quiz.i + 1} / ${quiz.items.length}</span><span class="chip">${KIND[it.kind]}</span><span class="chip">${md(t.name)}</span></div>
         <p class="q-text">${md(it.q)}</p><div class="q-opts">${it.order.map(i => `<button type="button" data-i="${i}">${md(it.a[i])}</button>`).join("")}</div><div data-exp></div></div>`;
       ST.$$("[data-i]", v).forEach(b => b.onclick = () => answer(+b.dataset.i));
       if (quiz.picked !== null) show();

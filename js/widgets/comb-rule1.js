@@ -6,7 +6,7 @@
   const combos = (items, r) => r === 0 ? [[]] : items.flatMap((x, i) => combos(items.slice(i + 1), r - 1).map(c => [x, ...c]));
 
   ST.widget("rule1", {
-    title: "性質①:C(n,r) = C(n−1,r−1) + C(n−1,r)(組合せ的解釈)",
+    title: "性質①:$C(n,r) = C(n-1,r-1) + C(n-1,r)$(組合せ的解釈)",
     group: "comb", name: "性質①を分けて数える", desc: "n 個から r 個を、A を選ぶ/選ばないで分ける", order: 5,
     tag: "性質①",
     formula: "$C(n,r) = C(n-1,r-1) + C(n-1,r)$",

@@ -19,10 +19,10 @@
   ST.ctl.laplaceNum = (f, s) => { let a = 0, h = .005, prev = f(0); for (let t = h; t <= 40 + 1e-9; t += h) { const c = f(t) * Math.exp(-s * t); a += (prev + c) / 2 * h; prev = c; } return a; };
   ST.widget("pfd", {
     title: "部分分数に分けて、1項ずつ時間の関数にもどす",
-    group: "ctl", name: "部分分数と逆ラプラス変換", desc: "F(s) を部分分数に分け、1項ずつ表を引いて足し合わせると f(t) になる", order: 8, tag: "逆ラプラス変換",
+    group: "ctl", name: "部分分数と逆ラプラス変換", desc: "$F(s)$ を部分分数に分け、1項ずつ表を引いて足し合わせると $f(t)$ になる", order: 8, tag: "逆ラプラス変換",
     formula: "$F(s) = \\frac{K_{1}}{s-s_{1}} +$ … $+ \\frac{K_{n}}{s-s_{n}} \\quad \\to \\quad f(t) = K_{1}e^{s_{1}t} +$ … $+ K_{n}e^{s_{n}t}$",
     says: "分母 $p(s) = 0$ の根(極)$s_{i}$ ごとに分けると、1項ずつ時間関数 $K_{i} e^{s_{i}t}$ にもどせます。係数は $K_{i} = [(s - s_{i})F(s)]$ を $s = s_{i}$ で計算。重根は、掛けて微分して求めます$(M_{i})$。",
-    meaning: "複雑な F(s) も、極ごとの単純な指数関数の足し算です。1項ずつ表で戻して足せば、答えの f(t) になります。極が -1、-3 なら、$e^{-t}$ と $e^{-3t}$ の足し算、というように、極と波形が1対1で対応します。",
+    meaning: "複雑な $F(s)$ も、極ごとの単純な指数関数の足し算です。1項ずつ表で戻して足せば、答えの $f(t)$ になります。極が -1、-3 なら、$e^{-t}$ と $e^{-3t}$ の足し算、というように、極と波形が1対1で対応します。",
     mount(el) {
       let key = "e1", shown = 0;
       el.innerHTML = `<div><p class="lab-label">例題</p>${ST.segHtml("ex", Object.entries(EX).map(([k, x]) => [k, x.name]), key)}</div>
